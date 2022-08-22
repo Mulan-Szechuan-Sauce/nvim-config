@@ -11,25 +11,6 @@ local on_attach = function(client, bufnr)
     -- Enable completion triggered by <c-x><c-o>
     buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-    local map_opts = { buffer = true }
-
-    -- Mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    require('legendary').bind_keymaps({
-        { 'gd', '<cmd>Telescope lsp_definitions<cr>', opts = map_opts },
-        { 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', opts = map_opts },
-        { 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts = map_opts },
-        { 'gi', '<cmd>Telescope lsp_implementations<cr>', opts = map_opts },
-        { '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts = map_opts },
-        { 'gr', '<cmd>Telescope lsp_references<cr>', opts = map_opts },
-        { '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>', opts = map_opts },
-        { ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>', opts = map_opts },
-        { '<leader>F', '<cmd>lua vim.lsp.buf.formatting()<cr>', opts = map_opts },
-        { '<leader>F', '<cmd>lua vim.lsp.buf.range_formatting()<cr>', opts = map_opts, mode = { 'v' } },
-        { 'gx', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts = map_opts },
-        { 'gR', '<cmd>lua vim.lsp.buf.rename()<cr>', opts = map_opts },
-    })
-
     vim.api.nvim_create_autocmd("CursorHold", {
         buffer = bufnr,
         callback = function()
@@ -44,6 +25,8 @@ local on_attach = function(client, bufnr)
             vim.diagnostic.open_float(nil, opts)
         end
     });
+
+    user_on_lsp_attach(client, bufnr)
 end
 
 local setup_lsp = function (server_name, overrides)
@@ -56,11 +39,24 @@ local setup_lsp = function (server_name, overrides)
     )
 end
 
-require("mason-lspconfig").setup_handlers({
-    function (server_name)
-        setup_lsp(server_name, {})
-    end,
-    sumneko_lua = function ()
-        setup_lsp('sumneko_lua', require('lua-dev').setup())
-    end,
-})
+local make_setup_handlers = function ()
+    local default_lsp_overrides = {
+        function (server_name)
+            setup_lsp(server_name, {})
+        end,
+
+        -- Neovim lua lsp
+        sumneko_lua = function()
+            setup_lsp('sumneko_lua', require('lua-dev').setup())
+        end,
+    }
+
+    for server_name, value in pairs(user_lsp_overrides) do
+        default_lsp_overrides[server_name] = function()
+            setup_lsp(server_name, value)
+        end
+    end
+    return default_lsp_overrides
+end
+
+require("mason-lspconfig").setup_handlers(make_setup_handlers())

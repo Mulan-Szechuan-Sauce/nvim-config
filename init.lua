@@ -1,3 +1,8 @@
-require 'functions'
-require 'options'
-require 'bootstrap'
+require('functions')
+
+require_user_config()
+
+require('options')
+require('bootstrap')
+
+user_config()

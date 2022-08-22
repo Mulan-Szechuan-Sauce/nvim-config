@@ -1,3 +1,21 @@
+function require_user_config()
+    local config_paths = {
+        os.getenv("MSS_NEOVIM_USER_DIR") or "",
+        "~/local/src/user.nvim/",
+        "~/.config/user.nvim/",
+        "~/.user.nvim/",
+    }
+
+    for _, path in ipairs(config_paths) do
+        local expanded = vim.fn.expand(path)
+        if vim.fn.isdirectory(expanded) ~= 0 then
+            package.path = package.path .. ";" .. expanded .. "?.lua"
+            require("user")
+            break
+        end
+    end
+end
+
 function telescope_find_files_dwim()
     local builtin = require('telescope.builtin')
     local ok = pcall(builtin.git_files, { cwd = get_buf_dir() })

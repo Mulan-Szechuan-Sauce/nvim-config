@@ -16,7 +16,6 @@ use {
     'mrjones2014/legendary.nvim',
     config = function()
         require('legendary').setup()
-        require('mappings')
         require('commands')
         require('autocommands')
     end,
@@ -161,10 +160,3 @@ use {
         require('Comment').setup()
     end
 }
-
-use {
-    'maxmellon/vim-jsx-pretty',
-    requires = { 'leafgarland/typescript-vim' },
-}
-
-use 'jparise/vim-graphql'
