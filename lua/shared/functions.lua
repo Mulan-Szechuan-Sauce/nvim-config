@@ -9,7 +9,7 @@ function require_user_config()
     for _, path in ipairs(config_paths) do
         local expanded = vim.fn.expand(path)
         if vim.fn.isdirectory(expanded) ~= 0 then
-            package.path = package.path .. ";" .. expanded .. "?.lua"
+            package.path = package.path .. ";" .. (expanded .. "?.lua;") .. (expanded .. "?/init.lua")
             require("user")
             break
         end
