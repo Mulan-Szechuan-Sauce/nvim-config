@@ -11,9 +11,15 @@ function require_user_config()
         if vim.fn.filereadable(expanded .. "init.lua") == 1 then
             package.path = package.path .. ";" .. (expanded .. "?.lua;") .. (expanded .. "?/init.lua")
             dofile(expanded .. "init.lua")
+
+            vim.g.user_config_path = expanded
             break
         end
     end
+end
+
+function require_viml(vimlConfigPath)
+    vim.cmd(string.format('source %s/viml/%s', vim.g.user_config_path, vimlConfigPath))
 end
 
 function telescope_find_files_dwim()
