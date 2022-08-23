@@ -1,6 +1,6 @@
 function require_user_config()
     local config_paths = {
-        os.getenv("MSS_NEOVIM_USER_DIR") or "",
+        os.getenv("MSS_NEOVIM_USER_DIR") or "GARBAGE",
         "~/local/src/user.nvim/",
         "~/.config/user.nvim/",
         "~/.user.nvim/",
@@ -8,9 +8,9 @@ function require_user_config()
 
     for _, path in ipairs(config_paths) do
         local expanded = vim.fn.expand(path)
-        if vim.fn.isdirectory(expanded) ~= 0 then
+        if vim.fn.filereadable(expanded .. "init.lua") == 1 then
             package.path = package.path .. ";" .. (expanded .. "?.lua;") .. (expanded .. "?/init.lua")
-            require("user")
+            dofile(expanded .. "init.lua")
             break
         end
     end
