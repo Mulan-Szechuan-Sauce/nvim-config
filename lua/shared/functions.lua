@@ -9,8 +9,8 @@ function require_user_config()
     for _, path in ipairs(config_paths) do
         local expanded = vim.fn.expand(path)
         if vim.fn.filereadable(expanded .. "init.lua") == 1 then
-            package.path = package.path .. ";" .. (expanded .. "?.lua;") .. (expanded .. "?/init.lua")
-            dofile(expanded .. "init.lua")
+            package.path = (expanded .. "?.lua;") .. (expanded .. "?/init.lua") .. ";" .. package.path
+            require('init')
 
             vim.g.user_config_path = expanded
             break
