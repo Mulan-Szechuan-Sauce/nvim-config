@@ -1,8 +1,8 @@
-require('functions')
+require('shared.functions')
 
 require_user_config()
 
-require('options')
-require('bootstrap')
+require('shared.options')
+require('shared.bootstrap')
 
 user_config()

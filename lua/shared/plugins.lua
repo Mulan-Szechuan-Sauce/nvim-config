@@ -7,8 +7,8 @@ use {
     'mrjones2014/legendary.nvim',
     config = function()
         require('legendary').setup()
-        require('commands')
-        require('autocommands')
+        require('shared.commands')
+        require('shared.autocommands')
     end,
 }
 
@@ -37,14 +37,14 @@ use {
                 additional_vim_regex_highlighting = false,
             },
         });
-        require('plugins.treesitter');
+        require('shared.plugins.treesitter');
     end
 }
 
 use {
     'nvim-lualine/lualine.nvim',
     requires = { 'kyazdani42/nvim-web-devicons', opt = true },
-    config = function() require('plugins.lualine') end
+    config = function() require('shared.plugins.lualine') end
 }
 
 use {
@@ -88,7 +88,7 @@ use {
         'hrsh7th/cmp-path',
         'hrsh7th/cmp-cmdline',
     },
-    config = function() require('plugins.cmp') end
+    config = function() require('shared.plugins.cmp') end
 }
 
 use {
@@ -106,8 +106,8 @@ use {
         'neovim/nvim-lspconfig',
     },
     config = function()
-        require('plugins.lsp-config')
-        require('plugins.lsp-ui-config')
+        require('shared.plugins.lsp-config')
+        require('shared.plugins.lsp-ui-config')
     end
 }
 
@@ -127,7 +127,7 @@ use {
         'rcarriga/nvim-dap-ui',
         'Weissle/persistent-breakpoints.nvim',
     },
-    config = function() require('plugins.dap') end,
+    config = function() require('shared.plugins.dap') end,
 }
 
 use {

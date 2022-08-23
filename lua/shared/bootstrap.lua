@@ -6,7 +6,7 @@ end
 vim.api.nvim_command 'packadd packer.nvim'
 
 require('packer').startup(function()
-    require('plugins')
+    require('shared.plugins')
     user_install_plugins()
 
     if packer_bootstrap then
