@@ -4,15 +4,6 @@ use 'wbthomason/packer.nvim'
 use 'nvim-lua/plenary.nvim'
 
 use {
-    'B4mbus/oxocarbon-lua.nvim',
-    config = function()
-        vim.g.oxocarbon_lua_disable_italic = true
-        vim.g.oxocarbon_lua_keep_terminal = true
-        vim.cmd('colorscheme oxocarbon-lua')
-    end
-}
-
-use {
     'mrjones2014/legendary.nvim',
     config = function()
         require('legendary').setup()
