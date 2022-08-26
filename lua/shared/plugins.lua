@@ -50,7 +50,6 @@ use {
 use {
     'nvim-telescope/telescope.nvim',
     requires = {
-        'nvim-telescope/telescope-ui-select.nvim',
         'kyazdani42/nvim-web-devicons',
         { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
         'nvim-telescope/telescope-file-browser.nvim',
@@ -71,9 +70,26 @@ use {
                 },
             },
         });
-        require('telescope').load_extension('ui-select');
         require('telescope').load_extension('fzf');
         require('telescope').load_extension('file_browser');
+    end
+}
+
+use {
+    'stevearc/dressing.nvim',
+    setup = function()
+        require('legendary').bind_autocmds({
+            { 'ColorScheme', function()
+                vim.api.nvim_set_hl(0, 'FloatBorder', { fg = "fg" })
+            end },
+        })
+    end,
+    config = function()
+        require('dressing').setup({
+            input = {
+                winblend = 0,
+            },
+        })
     end
 }
 
