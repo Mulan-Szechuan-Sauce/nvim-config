@@ -19,4 +19,7 @@ vim.o.lazyredraw = true
 vim.o.wrap = false
 vim.o.signcolumn = 'yes'
 vim.opt.list = true
-vim.opt.listchars = { trail = '·' }
+vim.opt.listchars = {
+    trail = '·',
+    tab = ">-",
+}

@@ -37,9 +37,20 @@ use {
                 enable = true,
                 additional_vim_regex_highlighting = false,
             },
+            rainbow = {
+                enable = true,
+                extended_mode = true,
+                max_file_lines = 10000,
+            },
         });
         require('shared.plugins.treesitter');
+        vim.cmd([[NoMatchParen]])
     end
+}
+
+use {
+    'nvim-treesitter/nvim-treesitter-context',
+    requires = { 'nvim-treesitter/nvim-treesitter' },
 }
 
 use {
@@ -168,3 +179,32 @@ use {
         require('Comment').setup()
     end
 }
+
+use 'p00f/nvim-ts-rainbow'
+use 'gpanders/editorconfig.nvim'
+
+use {
+    'is0n/jaq-nvim',
+    config = function()
+        require('jaq-nvim').setup {
+            cmds = {
+                -- Uses vim commands
+                internal = {
+                    lua = "luafile %",
+                    vim = "source %"
+                },
+                -- Uses shell commands
+                external = {
+                    markdown = "glow %",
+                    python   = "python3 %",
+                    go       = "go run %",
+                    sh       = "sh %"
+                }
+            },
+        }
+        require('legendary').bind_keymaps({
+            { '<leader>q', '<cmd>Jaq<cr>' },
+        })
+    end
+}
+
