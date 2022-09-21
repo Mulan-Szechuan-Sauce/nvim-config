@@ -44,7 +44,6 @@ use {
             },
         });
         require('shared.plugins.treesitter');
-        vim.cmd([[NoMatchParen]])
     end
 }
 
@@ -75,6 +74,7 @@ use {
                         prompt_position = "top",
                     },
                 },
+                path_display={"smart"},
             },
             pickers = {
                 git_files = {
@@ -202,9 +202,6 @@ use {
                 }
             },
         }
-        require('legendary').bind_keymaps({
-            { '<leader>q', '<cmd>Jaq<cr>' },
-        })
     end
 }
 
