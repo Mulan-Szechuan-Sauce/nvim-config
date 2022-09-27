@@ -155,6 +155,8 @@ use {
             bind = true,
             hint_enable = true,
             floating_window = false,
+            always_trigger = true,
+            auto_close_after = 4,
         })
     end
 }
