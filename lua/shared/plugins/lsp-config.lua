@@ -24,7 +24,7 @@ local on_attach = function(client, bufnr)
             }
             vim.diagnostic.open_float(nil, opts)
         end
-    });
+    })
 
     user_on_lsp_attach(client, bufnr)
 end

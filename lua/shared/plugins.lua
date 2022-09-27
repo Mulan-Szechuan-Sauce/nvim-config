@@ -147,6 +147,18 @@ use {
     end
 }
 
+use {
+    'ray-x/lsp_signature.nvim',
+    requires = { 'neovim/nvim-lspconfig' },
+    config = function()
+        require('lsp_signature').setup({
+            bind = true,
+            hint_enable = true,
+            floating_window = false,
+        })
+    end
+}
+
 use 'folke/lua-dev.nvim'
 
 use {
