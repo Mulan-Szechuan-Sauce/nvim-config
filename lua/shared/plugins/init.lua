@@ -59,31 +59,18 @@ use {
 }
 
 use {
-    'nvim-telescope/telescope.nvim',
-    requires = {
-        'kyazdani42/nvim-web-devicons',
-        { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
-        'nvim-telescope/telescope-file-browser.nvim',
-    },
+    'ibhagwan/fzf-lua',
+    requires = { 'kyazdani42/nvim-web-devicons' },
     config = function()
-        require('telescope').setup({
-            defaults = {
-                sorting_strategy = 'ascending',
-                layout_config = {
-                    horizontal = {
-                        prompt_position = "top",
-                    },
-                },
-                path_display={"smart"},
-            },
-            pickers = {
-                git_files = {
-                    show_untracked = true,
+        require('fzf-lua').setup({
+            global_resume = true,
+            global_resume_query = true,
+            git = {
+                files = {
+                    cmd = 'git ls-files --exclude-standard --cached --others',
                 },
             },
-        });
-        require('telescope').load_extension('fzf');
-        require('telescope').load_extension('file_browser');
+        })
     end
 }
 
@@ -180,12 +167,12 @@ use {
     end
 }
 
-use {
-    'TimUntersberger/neogit',
-    config = function()
-        require('neogit').setup {}
-    end
-}
+--use {
+--    'TimUntersberger/neogit',
+--    config = function()
+--        require('neogit').setup {}
+--    end
+--}
 
 use {
     'numToStr/Comment.nvim',

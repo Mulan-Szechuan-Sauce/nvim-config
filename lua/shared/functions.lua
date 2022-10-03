@@ -22,14 +22,6 @@ function require_viml(vimlConfigPath)
     vim.cmd(string.format('source %s/viml/%s', vim.g.user_config_path, vimlConfigPath))
 end
 
-function telescope_find_files_dwim()
-    local builtin = require('telescope.builtin')
-    local ok = pcall(builtin.git_files, { cwd = get_buf_dir() })
-    if not ok then
-        buildin.find_files({})
-    end
-end
-
 function open_toggle_term()
     vim.cmd(
         string.format("ToggleTerm ToggleTerm direction=vertical size=%d", vim.api.nvim_list_uis()[1].width * 0.4)
