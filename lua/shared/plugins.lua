@@ -174,7 +174,7 @@ use {
 
 use {
     'akinsho/toggleterm.nvim',
-    tag = 'v1.*',
+    tag = '*',
     config = function()
         require('toggleterm').setup()
     end
