@@ -1,5 +1,7 @@
 local lspconfig = require('lspconfig')
 
+-- Make sure neodev runs before any lspconfig
+require('neodev').setup()
 require('mason').setup()
 require('mason-lspconfig').setup()
 
@@ -43,11 +45,6 @@ local make_setup_handlers = function ()
     local default_lsp_overrides = {
         function (server_name)
             setup_lsp(server_name, {})
-        end,
-
-        -- Neovim lua lsp
-        sumneko_lua = function()
-            setup_lsp('sumneko_lua', require('lua-dev').setup())
         end,
     }
 

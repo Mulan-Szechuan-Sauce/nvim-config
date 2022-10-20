@@ -14,7 +14,6 @@ use {
 
 use 'tpope/vim-surround'
 use 'tpope/vim-repeat'
-use 'tpope/vim-rsi'
 use 'nelstrom/vim-visual-star-search'
 use 'tommcdo/vim-lion'
 use 'lambdalisue/suda.vim'
@@ -114,6 +113,8 @@ use {
     end
 }
 
+use 'folke/neodev.nvim'
+
 use {
     'williamboman/mason.nvim',
     requires = {
@@ -147,8 +148,6 @@ use {
         })
     end
 }
-
-use 'folke/lua-dev.nvim'
 
 use {
     'mfussenegger/nvim-dap',
@@ -205,4 +204,3 @@ use {
         }
     end
 }
-
