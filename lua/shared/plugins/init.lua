@@ -27,6 +27,9 @@ use {
 
 use {
     'nvim-treesitter/nvim-treesitter',
+    -- After this commit, the plugin removed allegedly obsolute highlighting options
+    -- https://github.com/nvim-treesitter/nvim-treesitter/commit/42ab95d5e11f247c6f0c8f5181b02e816caa4a4f#comments
+    commit = "addc129a4f272aba0834bd0a7b6bd4ad5d8c801b",
     run = ':TSUpdate',
     config = function()
         require('nvim-treesitter.configs').setup({
