@@ -79,7 +79,7 @@ use {
 use {
     'stevearc/dressing.nvim',
     setup = function()
-        require('legendary').bind_autocmds({
+        require('legendary').autocmds({
             { 'ColorScheme', function()
                 vim.api.nvim_set_hl(0, 'FloatBorder', { fg = "fg" })
             end },

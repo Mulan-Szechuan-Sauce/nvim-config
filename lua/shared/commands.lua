@@ -1,4 +1,4 @@
-require('legendary').bind_commands({
+require('legendary').commands({
     -- Use :W to sudo write file
     { ':W', ':SudaWrite' },
 
@@ -13,5 +13,8 @@ require('legendary').bind_commands({
         end,
         description = 'Trim trailing whitespace',
     },
+
+    -- Copy the sourcegraph url for the current line to the clipboard
+    { ':SgUrl', get_sourcegraph_url },
 })
 

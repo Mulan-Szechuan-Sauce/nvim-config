@@ -1,4 +1,4 @@
-require('legendary').bind_autocmds({
+require('legendary').autocmds({
     { 'TermOpen', function()
         -- Disable line numbers and signcolumn in terminal buffers
         vim.cmd('setlocal nonumber norelativenumber')
