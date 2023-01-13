@@ -45,12 +45,21 @@ dap.configurations.rust = {
         type = 'lldb',
         request = 'launch',
         program = function()
-            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/' .. vim.fn.expand('%:t'), 'file')
+            local path = vim.fn.getcwd() .. '/target/debug/*'
+            for i, p in ipairs(vim.split(vim.fn.glob(path), '\n')) do
+                if vim.fn.filereadable(p) == 1 and vim.fn.getfperm(p):sub(3,3) == 'x' then
+                    path = p
+                    break
+                end
+            end
+            -- return vim.fn.input('Path to executable: ', path, 'file')
+            return path
         end,
         cwd = '${workspaceFolder}',
         stopOnEntry = false,
         args = function()
-            return vim.fn.input('Args: ')
+            local args = vim.fn.input('Args: ')
+            return { '--', args }
         end,
     }
 };
