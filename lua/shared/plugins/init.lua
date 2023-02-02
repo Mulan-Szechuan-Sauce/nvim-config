@@ -2,6 +2,7 @@ local use = require('packer').use
 
 use 'wbthomason/packer.nvim'
 use 'nvim-lua/plenary.nvim'
+use 'kyazdani42/nvim-web-devicons'
 
 use {
     'mrjones2014/legendary.nvim',
