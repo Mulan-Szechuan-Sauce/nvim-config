@@ -1,34 +1,33 @@
-local use = require('packer').use
+return {
 
-use 'wbthomason/packer.nvim'
-use 'nvim-lua/plenary.nvim'
-use 'kyazdani42/nvim-web-devicons'
+'nvim-lua/plenary.nvim',
+'kyazdani42/nvim-web-devicons',
 
-use {
+{
     'mrjones2014/legendary.nvim',
     config = function()
         require('legendary').setup()
         require('shared.commands')
         require('shared.autocommands')
     end,
-}
+},
 
-use 'tpope/vim-surround'
-use 'tpope/vim-repeat'
-use 'nelstrom/vim-visual-star-search'
-use 'tommcdo/vim-lion'
-use 'lambdalisue/suda.vim'
-use 'sbdchd/neoformat'
-use 'famiu/bufdelete.nvim'
+'tpope/vim-surround',
+'tpope/vim-repeat',
+'nelstrom/vim-visual-star-search',
+'tommcdo/vim-lion',
+'lambdalisue/suda.vim',
+'sbdchd/neoformat',
+'famiu/bufdelete.nvim',
 
-use {
+{
     'ggandor/leap.nvim',
     config = function() require('leap').set_default_keymaps() end
-}
+},
 
-use {
+{
     'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate',
+    build = ':TSUpdate',
     config = function()
         require('nvim-treesitter.configs').setup({
             ensure_installed = { "comment" },
@@ -45,22 +44,21 @@ use {
         });
         require('shared.plugins.treesitter');
     end
-}
+},
 
-use {
+{
     'nvim-treesitter/nvim-treesitter-context',
-    requires = { 'nvim-treesitter/nvim-treesitter' },
-}
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+},
 
-use {
+{
     'nvim-lualine/lualine.nvim',
-    requires = { 'kyazdani42/nvim-web-devicons', opt = true },
     config = function() require('shared.plugins.lualine') end
-}
+},
 
-use {
+{
     'ibhagwan/fzf-lua',
-    requires = { 'kyazdani42/nvim-web-devicons' },
+    dependencies = { 'kyazdani42/nvim-web-devicons' },
     config = function()
         require('fzf-lua').setup({
             global_resume = true,
@@ -72,9 +70,9 @@ use {
             },
         })
     end
-}
+},
 
-use {
+{
     'stevearc/dressing.nvim',
     setup = function()
         require('legendary').autocmds({
@@ -92,11 +90,12 @@ use {
             },
         })
     end
-}
+},
 
-use {
+{
     'hrsh7th/nvim-cmp',
-    requires = {
+    event = "InsertEnter",
+    dependencies = {
         'neovim/nvim-lspconfig',
         'hrsh7th/cmp-nvim-lsp',
         'L3MON4D3/LuaSnip',
@@ -106,21 +105,22 @@ use {
         'hrsh7th/cmp-cmdline',
     },
     config = function() require('shared.plugins.cmp') end
-}
+},
 
-use {
+{
     'folke/trouble.nvim',
-    requires = 'kyazdani42/nvim-web-devicons',
+    dependencies = 'kyazdani42/nvim-web-devicons',
     config = function()
         require('trouble').setup();
     end
-}
+},
 
-use 'folke/neodev.nvim'
+'folke/neodev.nvim',
 
-use {
+{
     'williamboman/mason.nvim',
-    requires = {
+    dependencies = {
+        'mrjones2014/legendary.nvim',
         'williamboman/mason-lspconfig.nvim',
         'neovim/nvim-lspconfig',
     },
@@ -128,19 +128,19 @@ use {
         require('shared.plugins.lsp-config')
         require('shared.plugins.lsp-ui-config')
     end
-}
+},
 
-use {
+{
     'j-hui/fidget.nvim',
-    requires = { 'neovim/nvim-lspconfig' },
+    dependencies = { 'neovim/nvim-lspconfig' },
     config = function()
         require('fidget').setup({})
     end
-}
+},
 
-use {
+{
     'ray-x/lsp_signature.nvim',
-    requires = { 'neovim/nvim-lspconfig' },
+    dependencies = { 'neovim/nvim-lspconfig' },
     config = function()
         require('lsp_signature').setup({
             bind = true,
@@ -150,43 +150,37 @@ use {
             auto_close_after = 4,
         })
     end
-}
+},
 
-use {
+{
     'mfussenegger/nvim-dap',
-    requires = {
+    dependencies = {
+        'mrjones2014/legendary.nvim',
         'rcarriga/nvim-dap-ui',
         'Weissle/persistent-breakpoints.nvim',
     },
     config = function() require('shared.plugins.dap') end,
-}
+},
 
-use {
+{
     'akinsho/toggleterm.nvim',
-    tag = '*',
+    version = '*',
     config = function()
         require('toggleterm').setup()
     end
-}
+},
 
---use {
---    'TimUntersberger/neogit',
---    config = function()
---        require('neogit').setup {}
---    end
---}
-
-use {
+{
     'numToStr/Comment.nvim',
     config = function()
         require('Comment').setup()
     end
-}
+},
 
-use 'mrjones2014/nvim-ts-rainbow'
-use 'gpanders/editorconfig.nvim'
+'mrjones2014/nvim-ts-rainbow',
+'gpanders/editorconfig.nvim',
 
-use {
+{
     'is0n/jaq-nvim',
     config = function()
         require('jaq-nvim').setup {
@@ -206,4 +200,6 @@ use {
             },
         }
     end
+},
+
 }
