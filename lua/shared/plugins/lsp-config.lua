@@ -1,7 +1,17 @@
 local lspconfig = require('lspconfig')
 
 -- Make sure neodev runs before any lspconfig
-require('neodev').setup()
+require('neodev').setup({
+    override = function(root_dir, library)
+        -- If the repo/project root is dotfiles assume we're in a user.nvim config and enable
+        if root_dir:match("dotfiles$") ~= nil then
+            library.enabled = true
+            library.runtime = true
+            library.types = true
+            library.plugins = true
+        end
+    end,
+})
 require('mason').setup()
 require('mason-lspconfig').setup()
 
