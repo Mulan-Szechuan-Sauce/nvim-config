@@ -63,6 +63,13 @@ return {
         require('fzf-lua').setup({
             global_resume = true,
             global_resume_query = true,
+            winopts = {
+                -- TODO: Not sure why this is being mapped but it's causing issues exiting
+                --       so for now just unmap it (buffer locally) when you get into a fzf term
+                window_on_create = function()
+                    vim.cmd('tmap <buffer> <Esc> <Esc>')
+                end
+            },
             git = {
                 files = {
                     cmd = 'git ls-files --exclude-standard --cached --others',
