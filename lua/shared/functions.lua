@@ -40,6 +40,20 @@ function get_buf_dir()
     return vim.fn.expand("%:p:h")
 end
 
+function fzf_files_browse(cwd)
+    require('fzf-lua').files({
+        cwd = cwd,
+        actions = {
+            ["ctrl-w"] = {
+                function()
+                    local new_cwd = vim.loop.fs_realpath(cwd .. '/..')
+                    fzf_files_browse(new_cwd)
+                end
+            },
+        },
+    })
+end
+
 function get_sourcegraph_url()
     local repo_root = vim.fn.finddir('.git/..', vim.fn.expand('%:p:h') .. ';'):gsub('.git/', '')
     local file_path = vim.fn.expand('%:p')
@@ -60,6 +74,7 @@ local function open_current_tsnode_in_scratch_buf()
     while node do
         local type = node:type()
         if type == 'function_declaration' or
+            type == 'function_definition' or
             type == 'function_item' or
             type == 'method_declaration' then
             break
