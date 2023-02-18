@@ -85,8 +85,16 @@ local function open_current_tsnode_in_scratch_buf()
 
     if not node then return end
 
-    local start_row, start_col, end_row, end_col = ts_utils.get_node_range(node)
-    local text = vim.treesitter.query.get_node_text(node, 0, { concat = false })
+    local start_row, start_col, end_row, end_col = vim.treesitter.get_node_range(node)
+    -- Take entire first row to grab indentation
+    local text = vim.api.nvim_buf_get_text(0, start_row, 0, end_row, end_col, {})
+    -- local text = vim.treesitter.query.get_node_text(node, 0, { concat = false })
+
+    -- Strip leading indent
+    local indent = text[1]:match("^%s*")
+    for k, v in pairs(text) do
+        text[k] = v:sub(indent:len()+1, -1)
+    end
 
     local original_buf = vim.api.nvim_get_current_buf()
     local ft = vim.bo.filetype
@@ -103,8 +111,12 @@ local function open_current_tsnode_in_scratch_buf()
         pattern = {'<buffer>'},
         callback = function()
             local buffer_content = vim.api.nvim_buf_get_lines(tmp_buf, 0, -1, false)
+            -- Reindent
+            for k, v in pairs(buffer_content) do
+                buffer_content[k] = indent .. v
+            end
 
-            vim.api.nvim_buf_set_text(original_buf, start_row, start_col, end_row, end_col, buffer_content)
+            vim.api.nvim_buf_set_text(original_buf, start_row, 0, end_row, end_col, buffer_content)
         end,
     })
 end
