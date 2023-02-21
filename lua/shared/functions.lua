@@ -41,6 +41,9 @@ function get_buf_dir()
 end
 
 function fzf_files_browse(cwd)
+    if cwd == nil then
+        cwd = vim.loop.cwd()
+    end
     require('fzf-lua').files({
         cwd = cwd,
         actions = {
