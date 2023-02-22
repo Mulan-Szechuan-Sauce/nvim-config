@@ -40,17 +40,28 @@ function get_buf_dir()
     return vim.fn.expand("%:p:h")
 end
 
-function fzf_files_browse(cwd)
+function fzf_find_file(cwd)
     if cwd == nil then
         cwd = vim.loop.cwd()
     end
-    require('fzf-lua').files({
+    local fzf = require('fzf-lua')
+    fzf.files({
         cwd = cwd,
+        fd_opts = '--color=never --hidden --follow --exclude .git --max-depth 1',
         actions = {
-            ["ctrl-w"] = {
+            ['default'] = function (selected, opts)
+                local file = fzf.path.entry_to_file(selected[1], opts)
+
+                if vim.fn.isdirectory(file.path) ~= 0 then
+                    fzf_find_file(file.path)
+                else
+                    fzf.actions.file_edit(selected, opts)
+                end
+            end,
+            ['ctrl-w'] = {
                 function()
                     local new_cwd = vim.loop.fs_realpath(cwd .. '/..')
-                    fzf_files_browse(new_cwd)
+                    fzf_find_file(new_cwd)
                 end
             },
         },
