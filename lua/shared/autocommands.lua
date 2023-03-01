@@ -4,4 +4,11 @@ require('legendary').autocmds({
         vim.cmd('setlocal nonumber norelativenumber')
         vim.cmd('setlocal signcolumn=no')
     end },
+    {
+        { 'BufRead', 'BufNewFile' },
+        ':set filetype=python',
+        opts = {
+            pattern = { '*.pyst' },
+        },
+    },
 })
