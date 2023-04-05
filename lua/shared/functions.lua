@@ -127,7 +127,9 @@ local function open_current_tsnode_in_scratch_buf()
             local buffer_content = vim.api.nvim_buf_get_lines(tmp_buf, 0, -1, false)
             -- Reindent
             for k, v in pairs(buffer_content) do
-                buffer_content[k] = indent .. v
+                if v ~= "" then
+                    buffer_content[k] = indent .. v
+                end
             end
 
             vim.api.nvim_buf_set_text(original_buf, start_row, 0, end_row, end_col, buffer_content)

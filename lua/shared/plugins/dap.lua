@@ -24,7 +24,7 @@ dap.adapters.coreclr = {
     type = 'executable',
     command = 'netcoredbg',
     args = { '--interpreter=vscode' }
-};
+}
 dap.configurations.cs = {
     {
         type = "coreclr",
@@ -32,17 +32,25 @@ dap.configurations.cs = {
         request = "launch",
         program = get_dll_paths,
     },
-};
-
+}
 dap.adapters.lldb = {
     type = 'executable',
     command = '/usr/sbin/lldb-vscode',
     name = 'lldb'
-};
+}
+dap.adapters.codelldb = {
+    type = 'server',
+    port = "${port}",
+    executable = {
+        command = '/usr/bin/codelldb',
+        args = {"--port", "${port}"},
+    }
+}
+
 dap.configurations.rust = {
     {
         name = 'Launch',
-        type = 'lldb',
+        type = 'codelldb',
         request = 'launch',
         program = function()
             local path = vim.fn.getcwd() .. '/target/debug/*'
