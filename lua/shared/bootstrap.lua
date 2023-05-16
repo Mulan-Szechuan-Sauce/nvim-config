@@ -14,6 +14,8 @@ vim.opt.rtp:prepend(lazypath)
 local lazy = require('lazy')
 local plugins = require('shared.plugins')
 local user_plugins = user_install_plugins()
-lazy.setup(vim.tbl_extend('force', plugins, user_plugins))
 
-
+-- Using list_extend instead of tbl_extend to ensure all plugins are included. tbl_extend merges the two and because
+-- lists in Lua are tables with keys 1 -> N we end up losing values in the lists from key conflicts.
+vim.list_extend(plugins, user_plugins)
+lazy.setup(plugins)

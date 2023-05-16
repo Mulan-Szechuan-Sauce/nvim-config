@@ -1,7 +1,7 @@
 return {
 
 'nvim-lua/plenary.nvim',
-'kyazdani42/nvim-web-devicons',
+'nvim-tree/nvim-web-devicons',
 
 {
     'mrjones2014/legendary.nvim',
@@ -58,7 +58,7 @@ return {
 
 {
     'ibhagwan/fzf-lua',
-    dependencies = { 'kyazdani42/nvim-web-devicons' },
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
         require('fzf-lua').setup({
             global_resume = true,
@@ -119,7 +119,7 @@ return {
 
 {
     'folke/trouble.nvim',
-    dependencies = 'kyazdani42/nvim-web-devicons',
+    dependencies = 'nvim-tree/nvim-web-devicons',
     config = function()
         require('trouble').setup();
     end
