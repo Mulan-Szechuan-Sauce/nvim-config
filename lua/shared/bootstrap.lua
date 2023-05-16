@@ -15,13 +15,7 @@ local lazy = require('lazy')
 local plugins = require('shared.plugins')
 local user_plugins = user_install_plugins()
 
--- Updated this to be list_extends instead of tbl_extends because lists in lua are tables with key = array index and when
--- performing an extend using tbl.extend we don't actually get all values from both tables. Given length of user_plugins
--- is N we get the following: 
---   1) All plugins from user_plugins
---   2) plugins with index > N from the shared plugins
--- This function actually gives us all from both
+-- Using list_extend instead of tbl_extend to ensure all plugins are included. tbl_extend merges the two and because
+-- lists in Lua are tables with keys 1 -> N we end up losing values in the lists from key conflicts.
 vim.list_extend(plugins, user_plugins)
 lazy.setup(plugins)
-
-
