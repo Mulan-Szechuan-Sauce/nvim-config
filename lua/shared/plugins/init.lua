@@ -142,6 +142,7 @@ return {
 
 {
     'j-hui/fidget.nvim',
+    tag = 'legacy',
     dependencies = { 'neovim/nvim-lspconfig' },
     config = function()
         require('fidget').setup({})
