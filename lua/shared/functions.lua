@@ -124,6 +124,8 @@ local function open_current_tsnode_in_scratch_buf()
     vim.api.nvim_create_autocmd({'BufDelete'}, {
         pattern = {'<buffer>'},
         callback = function()
+            -- TODO: Figure out how to set the cursor in another buffer
+            -- local tmp_cursor_row, tmp_cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
             local buffer_content = vim.api.nvim_buf_get_lines(tmp_buf, 0, -1, false)
             -- Reindent
             for k, v in pairs(buffer_content) do

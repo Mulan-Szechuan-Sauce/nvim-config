@@ -72,6 +72,28 @@ dap.configurations.rust = {
     }
 };
 
+local user = os.getenv("USER")
+
+dap.adapters.delve = {
+    type = "server",
+    host = ("%s-dbx.dev.corp.dropbox.com"):format(user),
+    port = 56134,
+}
+dap.configurations.go = {
+    {
+        type = "delve",
+        name = "Debug",
+        request = "attach",
+        mode = "remote",
+        substitutePath = {
+            {
+                from = ("/Users/%s/src/server/"):format(user),
+                to = ""
+            }
+        },
+    },
+}
+
 vim.fn.sign_define('DapBreakpoint', { text = '🛑', texthl = '', linehl = '', numhl = '' })
 
 dapui.setup({
