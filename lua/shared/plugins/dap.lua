@@ -42,14 +42,14 @@ dap.adapters.codelldb = {
     type = 'server',
     port = "${port}",
     executable = {
-        command = '/usr/bin/codelldb',
+        command = vim.fn.stdpath('data') .. '/mason/bin/codelldb',
         args = {"--port", "${port}"},
     }
 }
 
 dap.configurations.rust = {
     {
-        name = 'Launch',
+        name = 'Run',
         type = 'codelldb',
         request = 'launch',
         program = function()
@@ -69,7 +69,30 @@ dap.configurations.rust = {
             local args = vim.fn.input('Args: ')
             return { '--', args }
         end,
-    }
+    },
+    {
+        name = 'Test',
+        type = 'codelldb',
+        request = 'launch',
+        program = function()
+            print('Compiling...')
+            -- TODO: Show output, in case there is a compile error or something. And to show live updates. 
+            local path = vim.fn.system {
+                'bash',
+                '-c',
+                'cd ' ..
+                    vim.fn.expand('%:p:h') ..
+                    ' && RUSTFLAGS=-g cargo test --no-run 2>&1 | ' ..
+                    'grep "Executable.*(" | ' ..
+                    'sed "s/^[[:blank:]]*Executable.*(\\(.*\\))/\\1/"',
+            }
+            path = path:gsub("%s+", "") -- trim ws
+            print('Attempting to debug binary at ' .. path)
+            return path
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+    },
 };
 
 local user = os.getenv("USER")
@@ -120,21 +143,21 @@ dapui.setup({
     layouts = {
         {
             elements = {
+                "watches",
+            },
+            size = 0.25, -- 25% of total lines
+            position = "bottom",
+        },
+        {
+            elements = {
                 -- Elements can be strings or table with id and size keys.
                 { id = "scopes", size = 0.25 },
                 "breakpoints",
                 "stacks",
-                "watches",
+                "repl",
             },
             size = .2,
             position = "left",
-        },
-        {
-            elements = {
-                "repl",
-            },
-            size = 0.25, -- 25% of total lines
-            position = "bottom",
         },
     },
     floating = {
