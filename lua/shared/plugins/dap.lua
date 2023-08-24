@@ -75,19 +75,25 @@ dap.configurations.rust = {
         type = 'codelldb',
         request = 'launch',
         program = function()
-            print('Compiling...')
-            -- TODO: Show output, in case there is a compile error or something. And to show live updates. 
-            local path = vim.fn.system {
-                'bash',
-                '-c',
-                'cd ' ..
-                    vim.fn.expand('%:p:h') ..
-                    ' && RUSTFLAGS=-g cargo test --no-run 2>&1 | ' ..
-                    'grep "Executable.*(" | ' ..
-                    'sed "s/^[[:blank:]]*Executable.*(\\(.*\\))/\\1/"',
-            }
-            path = path:gsub("%s+", "") -- trim ws
-            print('Attempting to debug binary at ' .. path)
+            local output = run_cmd_in_floating_window('bash -c "RUSTFLAGS=-g cargo test --no-run 2>&1"')
+            local candidates = {}
+            for _, line in ipairs(output) do
+                local path = line:match('Executable.*')
+                if path then
+                    table.insert(candidates, path)
+                end
+            end
+
+            local selection = require('dap.ui').pick_one_sync(candidates, 'Select test: ', function(candidate)
+                return candidate
+            end)
+
+            if selection == nil then
+                print('Invalid selection')
+                return nil
+            end
+
+            local path = vim.split(selection, '[\\(\\)]')[2]
             return path
         end,
         cwd = '${workspaceFolder}',

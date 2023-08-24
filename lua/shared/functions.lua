@@ -147,3 +147,51 @@ function narrow_to_function()
     end
 end
 
+
+-- TODO: Control characters aren't handled. Fancy progress bars (and similar won't work)
+function run_cmd_in_floating_window(cmd)
+    local tmp_buf = vim.api.nvim_create_buf(true, true)
+    vim.api.nvim_buf_set_keymap(tmp_buf, 'n', 'q', '<cmd>q<cr>', {noremap=true})
+
+    local size = vim.api.nvim_list_uis()[1]
+    local width = vim.fn.floor(size.width * 0.8)
+    local height = vim.fn.floor(size.height * 0.8)
+
+    vim.api.nvim_open_win(tmp_buf, true, {
+        relative = 'win',
+        row = (size.height - height) * 0.5,
+        col = (size.width - width) * 0.5,
+        width = width,
+        height = height,
+        border = 'single',
+        style= 'minimal'
+    })
+
+    local output = {}
+    local function print_stdout(chan_id, data, name)
+        local d = data
+        if d ~= { "" } then
+            d = table.remove(d)
+        end
+        for _, v in ipairs(data) do
+            table.insert(output, v)
+        end
+        vim.api.nvim_buf_set_lines(tmp_buf, 0, -1, true, output)
+        -- Scroll to bottom and redraw so it's visible
+        vim.cmd('normal G')
+        vim.cmd('redraw')
+    end
+
+    local exit_code = 0
+    local j = vim.fn.jobstart(cmd, { on_stdout = print_stdout, on_exit = function(_, code) exit_code = code end })
+
+    -- This blocks
+    vim.fn.jobwait({ j })
+
+    -- Don't exit on error
+    if exit_code == 0 then
+        vim.api.nvim_buf_delete(tmp_buf, { force = true })
+    end
+
+    return output
+end
