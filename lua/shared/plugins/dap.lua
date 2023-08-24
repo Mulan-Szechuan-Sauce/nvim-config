@@ -76,7 +76,7 @@ dap.configurations.rust = {
         request = 'launch',
         program = function()
             local cwd = vim.fn.expand('%:p:h')
-            local output = run_cmd_in_floating_window('bash -c "RUSTFLAGS=-g cargo test --no-run 2>&1"', cwd)
+            local output = run_cmd_in_floating_window('bash -c "cargo test --no-run 2>&1"', cwd)
             local candidates = {}
             for _, line in ipairs(output) do
                 local path = line:match('Executable.*')
