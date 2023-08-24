@@ -149,7 +149,7 @@ end
 
 
 -- TODO: Control characters aren't handled. Fancy progress bars (and similar won't work)
-function run_cmd_in_floating_window(cmd)
+function run_cmd_in_floating_window(cmd, cwd)
     local tmp_buf = vim.api.nvim_create_buf(true, true)
     vim.api.nvim_buf_set_keymap(tmp_buf, 'n', 'q', '<cmd>q<cr>', {noremap=true})
 
@@ -183,7 +183,7 @@ function run_cmd_in_floating_window(cmd)
     end
 
     local exit_code = 0
-    local j = vim.fn.jobstart(cmd, { on_stdout = print_stdout, on_exit = function(_, code) exit_code = code end })
+    local j = vim.fn.jobstart(cmd, { cwd = cwd, on_stdout = print_stdout, on_exit = function(_, code) exit_code = code end })
 
     -- This blocks
     vim.fn.jobwait({ j })

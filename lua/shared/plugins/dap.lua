@@ -75,7 +75,8 @@ dap.configurations.rust = {
         type = 'codelldb',
         request = 'launch',
         program = function()
-            local output = run_cmd_in_floating_window('bash -c "RUSTFLAGS=-g cargo test --no-run 2>&1"')
+            local cwd = vim.fn.expand('%:p:h')
+            local output = run_cmd_in_floating_window('bash -c "RUSTFLAGS=-g cargo test --no-run 2>&1"', cwd)
             local candidates = {}
             for _, line in ipairs(output) do
                 local path = line:match('Executable.*')
@@ -84,9 +85,15 @@ dap.configurations.rust = {
                 end
             end
 
-            local selection = require('dap.ui').pick_one_sync(candidates, 'Select test: ', function(candidate)
-                return candidate
-            end)
+            local selection = nil
+
+            if #candidates == 1 then
+                selection = candidates[1]
+            else
+                selection = require('dap.ui').pick_one_sync(candidates, 'Select test: ', function(candidate)
+                    return candidate
+                end)
+            end
 
             if selection == nil then
                 print('Invalid selection')
