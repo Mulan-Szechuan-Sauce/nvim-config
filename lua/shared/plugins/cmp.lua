@@ -27,16 +27,19 @@ end
 
 cmp.setup({
     formatting = {
-        format = lspkind.cmp_format({
-            mode = "symbol_text",
-            menu = ({
-                buffer = "[Buffer]",
-                nvim_lsp = "[LSP]",
-                luasnip = "[LuaSnip]",
-                nvim_lua = "[Lua]",
-                latex_symbols = "[Latex]",
-            }),
-        }),
+        fields = { "kind", "abbr", "menu" },
+        format = function(_, vim_item)
+            local kind = vim_item.kind
+            vim_item.kind = " " .. (lspkind.symbol_map[kind] or "FIXME") .. " "
+            vim_item.menu = "(" .. kind .. ")"
+
+            return vim_item
+        end,
+    },
+    window = {
+        completion = {
+            side_padding = 0,
+        },
     },
     snippet = {
         expand = function(args)
@@ -44,7 +47,7 @@ cmp.setup({
         end,
     },
     mapping = cmp.mapping.preset.insert({
-        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-b>'] = cmp.mapping.scroll_docs( -4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(),
         ['<C-g>'] = cmp.mapping.abort(),
@@ -104,7 +107,7 @@ cmp.setup.cmdline(':', {
         ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }), { 'i', 'c' }),
     }),
     view = {
-        entries = {name = 'wildmenu', separator = ' | ' }
+        entries = { name = 'wildmenu', separator = ' | ' }
     },
     sources = cmp.config.sources({
         { name = 'path' }
