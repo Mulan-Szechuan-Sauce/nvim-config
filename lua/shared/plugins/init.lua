@@ -36,11 +36,6 @@ return {
                 enable = true,
                 additional_vim_regex_highlighting = false,
             },
-            rainbow = {
-                enable = true,
-                extended_mode = true,
-                max_file_lines = 10000,
-            },
         });
         require('shared.plugins.treesitter');
     end
@@ -188,7 +183,6 @@ return {
     end
 },
 
-'mrjones2014/nvim-ts-rainbow',
 'gpanders/editorconfig.nvim',
 
 {
