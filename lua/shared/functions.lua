@@ -68,6 +68,54 @@ function fzf_find_file(cwd)
     })
 end
 
+
+
+function fzf_path_aliases(path_aliases, root)
+    local fzf = require('fzf-lua')
+
+    local dirs = ""
+    for k,_ in pairs(path_aliases) do
+        dirs = dirs .. " " .. k
+    end
+
+    local reverse_map = {}
+
+    local UnshortenerPreviewer = require("fzf-lua.previewer.builtin").buffer_or_file:extend()
+    function UnshortenerPreviewer:new(o, opts, fzf_win)
+        UnshortenerPreviewer.super.new(self, o, opts, fzf_win)
+        setmetatable(self, UnshortenerPreviewer)
+        return self
+    end
+    function UnshortenerPreviewer:parse_entry(entry_str)
+        local path = fzf.path.entry_to_file(entry_str).path
+        local full_path = root .. '/' .. reverse_map[path]
+        return {
+            path = full_path,
+        }
+    end
+
+    fzf.fzf_exec('fd . --type file' .. dirs, {
+        cwd = root,
+        previewer = UnshortenerPreviewer,
+        fn_transform = function(item)
+            for k,v in pairs(path_aliases) do
+                local prefix = item:sub(0, k:len())
+                if k == prefix then
+                    local shortened = item:gsub(prefix, v)
+                    reverse_map[shortened] = item
+                    return fzf.make_entry.file(shortened, {file_icons=true, color_icons=true})
+                end
+            end
+        end,
+        actions = {
+            ['default'] = function(selected, opts)
+                local path = fzf.path.entry_to_file(selected[1]).path
+                fzf.actions.file_edit({ reverse_map[path] }, opts)
+            end
+        },
+    })
+end
+
 function get_sourcegraph_url()
     local repo_root = vim.fn.finddir('.git/..', vim.fn.expand('%:p:h') .. ';'):gsub('.git/', '')
     local file_path = vim.fn.expand('%:p')
