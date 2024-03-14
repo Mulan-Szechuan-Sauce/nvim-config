@@ -50,7 +50,7 @@ function fzf_find_file(cwd)
         fd_opts = '--color=never --hidden --follow --exclude .git --max-depth 1',
         autoclose = false,
         actions = {
-            ['default'] = function (selected, opts)
+            ['default'] = function(selected, opts)
                 local file = fzf.path.entry_to_file(selected[1], opts)
 
                 if vim.fn.isdirectory(file.path) ~= 0 then
@@ -63,12 +63,14 @@ function fzf_find_file(cwd)
             ['ctrl-w'] = function()
                 local new_cwd = vim.loop.fs_realpath(cwd .. '/..')
                 fzf_find_file(new_cwd)
+            end,
+            ['alt-c'] = function()
+                vim.cmd('tcd ' .. cwd)
+                fzf.actions.resume()
             end
         },
     })
 end
-
-
 
 function fzf_path_aliases(path_aliases, root)
     local fzf = require('fzf-lua')
