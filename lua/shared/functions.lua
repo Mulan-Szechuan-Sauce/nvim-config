@@ -48,35 +48,40 @@ function fzf_find_file(cwd)
     fzf.files({
         cwd = cwd,
         fd_opts = '--color=never --hidden --follow --exclude .git --max-depth 1',
-        autoclose = false,
         actions = {
-            ['default'] = function(selected, opts)
-                -- If we have no selection, we want to create a new file
-                if #selected == 0 then
-                    local new_file = cwd .. '/' .. fzf.get_last_query()
-                    fzf.win.win_leave()
-                    vim.cmd('e ' .. new_file)
-                    return
-                end
+            ['default'] = { 
+                function(selected, opts)
+                    -- If we have no selection, we want to create a new file
+                    if #selected == 0 then
+                        local new_file = cwd .. '/' .. fzf.get_last_query()
+                        fzf.win.win_leave()
+                        vim.cmd('e ' .. new_file)
+                        return
+                    end
 
-                local file = fzf.path.entry_to_file(selected[1], opts)
+                    local file = fzf.path.entry_to_file(selected[1], opts)
 
-                -- If the selection is a directory recurse otherwise open the file
-                if vim.fn.isdirectory(file.path) ~= 0 then
-                    fzf_find_file(file.path)
-                else
-                    fzf.win.win_leave()
-                    fzf.actions.file_edit(selected, opts)
+                    -- If the selection is a directory recurse otherwise open the file
+                    if vim.fn.isdirectory(file.path) ~= 0 then
+                        fzf_find_file(file.path)
+                    else
+                        fzf.win.win_leave()
+                        fzf.actions.file_edit(selected, opts)
+                    end
                 end
-            end,
-            ['ctrl-w'] = function()
-                local new_cwd = vim.loop.fs_realpath(cwd .. '/..')
-                fzf_find_file(new_cwd)
-            end,
-            ['alt-c'] = function()
-                vim.cmd('tcd ' .. cwd)
-                fzf.actions.resume()
-            end,
+            },
+            ['ctrl-w'] = {
+                function()
+                    local new_cwd = vim.loop.fs_realpath(cwd .. '/..')
+                    fzf_find_file(new_cwd)
+                end
+            },
+            ['alt-c'] = {
+                function()
+                    vim.cmd('tcd ' .. cwd)
+                    fzf.actions.resume()
+                end
+            },
         },
     })
 end
