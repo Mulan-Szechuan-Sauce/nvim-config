@@ -167,6 +167,7 @@ return {
     'mfussenegger/nvim-dap',
     dependencies = {
         'mrjones2014/legendary.nvim',
+        'nvim-neotest/nvim-nio',
         'rcarriga/nvim-dap-ui',
         'Weissle/persistent-breakpoints.nvim',
     },
