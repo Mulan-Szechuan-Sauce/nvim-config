@@ -58,6 +58,7 @@ cmp.setup({
         { name = 'luasnip' },
     }, {
         { name = 'buffer' },
+        { name = 'path', trigger_characters = { '/' } },
     }),
     -- From: https://old.reddit.com/r/neovim/comments/u3c3kw/how_do_you_sorting_cmp_completions_items/i4p8gck/
     sorting = {
