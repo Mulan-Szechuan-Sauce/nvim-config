@@ -4,7 +4,7 @@ local lspconfig = require('lspconfig')
 require('neodev').setup({
     override = function(root_dir, library)
         -- If the repo/project root is dotfiles assume we're in a user.nvim config and enable
-        if root_dir:match("dotfiles$") ~= nil then
+        if root_dir:match('dotfiles$') or root_dir:find('.config/nvim') or root_dir:find('%.nvim') then
             library.enabled = true
             library.runtime = true
             library.types = true
