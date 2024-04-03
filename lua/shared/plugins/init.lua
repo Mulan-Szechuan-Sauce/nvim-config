@@ -216,4 +216,19 @@ return {
 'github/copilot.vim',
 'sindrets/diffview.nvim',
 
+{
+    "cbochs/grapple.nvim",
+    opts = {
+        scope = "cwd",
+    },
+},
+
+
+{
+    'WolfeCub/harpeek.nvim',
+    config = function()
+        require('harpeek').setup()
+    end
+},
+
 }
