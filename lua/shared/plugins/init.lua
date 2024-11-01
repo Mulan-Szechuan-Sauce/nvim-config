@@ -71,9 +71,6 @@ return {
                     vim.cmd('tmap <buffer> <Esc> <Esc>')
                 end
             },
-            files = {
-                git_icons = false,
-            },
             git = {
                 files = {
                     cmd = 'git ls-files --exclude-standard --cached --others',
