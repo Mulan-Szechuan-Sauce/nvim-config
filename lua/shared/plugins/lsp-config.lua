@@ -41,7 +41,7 @@ local on_attach = function(client, bufnr)
     user_on_lsp_attach(client, bufnr)
 end
 
-local setup_lsp = function (server_name, overrides)
+local setup_lsp = function(server_name, overrides)
     local opts = {
         on_attach = on_attach,
         capabilities = require('cmp_nvim_lsp').default_capabilities(),
@@ -51,10 +51,27 @@ local setup_lsp = function (server_name, overrides)
     )
 end
 
-local make_setup_handlers = function ()
+local make_setup_handlers = function()
     local default_lsp_overrides = {
-        function (server_name)
+        function(server_name)
             setup_lsp(server_name, {})
+        end,
+        svelte = function()
+            setup_lsp('svelte', {
+                on_attach = function(client, bufnr)
+                    -- First call our standard on_attach
+                    on_attach(client, bufnr)
+
+                    -- Then this workaround https://github.com/sveltejs/language-tools/issues/2008#issuecomment-2351976230
+                    vim.api.nvim_create_autocmd('BufWritePost', {
+                        pattern = { '*.js', '*.ts' },
+                        group = vim.api.nvim_create_augroup('svelte_ondidchangetsorjsfile', { clear = true }),
+                        callback = function(ctx)
+                            client.notify('$/onDidChangeTsOrJsFile', { uri = ctx.match })
+                        end,
+                    })
+                end,
+            })
         end,
     }
 
@@ -68,18 +85,29 @@ end
 
 require("mason-lspconfig").setup_handlers(make_setup_handlers())
 
+-- TODO: https://github.com/neovim/neovim/issues/30985 remove this workaround when possible
+for _, method in ipairs({ 'textDocument/diagnostic', 'workspace/diagnostic' }) do
+    local default_diagnostic_handler = vim.lsp.handlers[method]
+    vim.lsp.handlers[method] = function(err, result, context, config)
+        if err ~= nil and err.code == -32802 then
+            return
+        end
+        return default_diagnostic_handler(err, result, context, config)
+    end
+end
+
 vim.cmd [[autocmd! ColorScheme * highlight NormalFloat guibg=#1f2335]]
 vim.cmd [[autocmd! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]]
 
 local border = {
-    {"┏", "FloatBorder"},
-    {"━", "FloatBorder"},
-    {"┓", "FloatBorder"},
-    {"┃", "FloatBorder"},
-    {"┛", "FloatBorder"},
-    {"━", "FloatBorder"},
-    {"┗", "FloatBorder"},
-    {"┃", "FloatBorder"},
+    { "┏", "FloatBorder" },
+    { "━", "FloatBorder" },
+    { "┓", "FloatBorder" },
+    { "┃", "FloatBorder" },
+    { "┛", "FloatBorder" },
+    { "━", "FloatBorder" },
+    { "┗", "FloatBorder" },
+    { "┃", "FloatBorder" },
 }
 
 local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
