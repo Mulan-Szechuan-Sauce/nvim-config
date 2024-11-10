@@ -215,16 +215,18 @@ return {
 
 {
     "cbochs/grapple.nvim",
-    opts = {
-        scope = "cwd",
-    },
+    -- opts = {
+    --     scope = "cwd",
+    -- },
 },
 
 
 {
     'WolfeCub/harpeek.nvim',
     config = function()
-        require('harpeek').setup()
+        require('harpeek').setup({
+            tabline = true,
+        })
     end
 },
 
