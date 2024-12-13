@@ -214,6 +214,13 @@ return {
 'sindrets/diffview.nvim',
 
 {
+    'linrongbin16/gitlinker.nvim',
+    config = function()
+        require('gitlinker').setup()
+    end,
+},
+
+{
     "cbochs/grapple.nvim",
     -- opts = {
     --     scope = "cwd",

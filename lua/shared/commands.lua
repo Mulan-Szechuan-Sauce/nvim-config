@@ -13,8 +13,5 @@ require('legendary').commands({
         end,
         description = 'Trim trailing whitespace',
     },
-
-    -- Copy the sourcegraph url for the current line to the clipboard
-    { ':SgUrl', get_sourcegraph_url },
 })
 

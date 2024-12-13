@@ -132,19 +132,6 @@ function fzf_path_aliases(path_aliases, root)
     })
 end
 
-function get_sourcegraph_url()
-    local repo_root = vim.fn.finddir('.git/..', vim.fn.expand('%:p:h') .. ';'):gsub('.git/', '')
-    local file_path = vim.fn.expand('%:p')
-    local url = 'https://sourcegraph.pp.dropbox.com/' ..
-        vim.fn.fnamemodify(repo_root, ':t') .. -- repo name
-        '/-/blob' ..
-        file_path:gsub(repo_root, '') .. -- relative file path
-        '?L' ..
-        vim.fn.line('.')
-
-    vim.fn.setreg('+', url)
-end
-
 local function open_current_tsnode_in_scratch_buf()
     local ts_utils = require('nvim-treesitter.ts_utils')
     local node = ts_utils.get_node_at_cursor()
