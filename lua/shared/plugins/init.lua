@@ -140,20 +140,6 @@ return {
 },
 
 {
-    'ray-x/lsp_signature.nvim',
-    dependencies = { 'neovim/nvim-lspconfig' },
-    config = function()
-        require('lsp_signature').setup({
-            bind = true,
-            hint_enable = true,
-            floating_window = false,
-            always_trigger = true,
-            auto_close_after = 4,
-        })
-    end
-},
-
-{
     'mfussenegger/nvim-dap',
     dependencies = {
         'mrjones2014/legendary.nvim',
