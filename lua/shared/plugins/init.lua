@@ -101,18 +101,11 @@ return {
 },
 
 {
-    'hrsh7th/nvim-cmp',
-    event = "InsertEnter",
-    dependencies = {
-        'neovim/nvim-lspconfig',
-        'hrsh7th/cmp-nvim-lsp',
-        'L3MON4D3/LuaSnip',
-        'saadparwaiz1/cmp_luasnip',
-        'onsails/lspkind.nvim',
-        'hrsh7th/cmp-path',
-        'hrsh7th/cmp-cmdline',
-    },
-    config = function() require('shared.plugins.cmp') end
+    'saghen/blink.cmp',
+    dependencies = 'rafamadriz/friendly-snippets',
+    version = '*',
+    opts = require('shared.plugins.blink'),
+    opts_extend = { "sources.default" }
 },
 
 {

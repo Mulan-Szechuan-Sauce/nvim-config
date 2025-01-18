@@ -44,7 +44,7 @@ end
 local setup_lsp = function(server_name, overrides)
     local opts = {
         on_attach = on_attach,
-        capabilities = require('cmp_nvim_lsp').default_capabilities(),
+        capabilities = require('blink.cmp').get_lsp_capabilities(),
     }
     lspconfig[server_name].setup(
         vim.tbl_extend('force', opts, overrides)
