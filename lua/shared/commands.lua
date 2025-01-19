@@ -13,5 +13,7 @@ require('legendary').commands({
         end,
         description = 'Trim trailing whitespace',
     },
+
+    { ':GitLink', ':lua Snacks.gitbrowse()' },
 })
 

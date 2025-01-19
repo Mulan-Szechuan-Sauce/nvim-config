@@ -18,7 +18,6 @@ return {
 'tommcdo/vim-lion',
 'lambdalisue/suda.vim',
 'sbdchd/neoformat',
-'famiu/bufdelete.nvim',
 
 {
     'ggandor/leap.nvim',
@@ -58,46 +57,19 @@ return {
 },
 
 {
-    'ibhagwan/fzf-lua',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
+    opts = {
+        picker = { enabled = true },
+        bufdelete = { enabled = true },
+        gitbrowse = { enabled = true },
+        lazygit = { enabled = true },
+    },
     config = function()
-        require('fzf-lua').setup({
-            global_resume = true,
-            global_resume_query = true,
-            winopts = {
-                -- TODO: Not sure why this is being mapped but it's causing issues exiting
-                --       so for now just unmap it (buffer locally) when you get into a fzf term
-                window_on_create = function()
-                    vim.cmd('tmap <buffer> <Esc> <Esc>')
-                end
-            },
-            git = {
-                files = {
-                    cmd = 'git ls-files --exclude-standard --cached --others',
-                },
-            },
-        })
-    end
-},
-
-{
-    'stevearc/dressing.nvim',
-    setup = function()
-        require('legendary').autocmds({
-            { 'ColorScheme', function()
-                vim.api.nvim_set_hl(0, 'FloatBorder', { fg = "fg" })
-            end },
-        })
+        vim.cmd [[highlight SnacksPickerDir guifg='#BCBCBC']]
     end,
-    config = function()
-        require('dressing').setup({
-            input = {
-                win_options = {
-                    winblend = 0,
-                },
-            },
-        })
-    end
 },
 
 {
@@ -167,37 +139,8 @@ return {
 
 'gpanders/editorconfig.nvim',
 
-{
-    'is0n/jaq-nvim',
-    config = function()
-        require('jaq-nvim').setup {
-            cmds = {
-                -- Uses vim commands
-                internal = {
-                    lua = "luafile %",
-                    vim = "source %"
-                },
-                -- Uses shell commands
-                external = {
-                    markdown = "glow %",
-                    python   = "python3 %",
-                    go       = "go run %",
-                    sh       = "sh %"
-                }
-            },
-        }
-    end
-},
-
 'github/copilot.vim',
 'sindrets/diffview.nvim',
-
-{
-    'linrongbin16/gitlinker.nvim',
-    config = function()
-        require('gitlinker').setup()
-    end,
-},
 
 {
     "cbochs/grapple.nvim",
