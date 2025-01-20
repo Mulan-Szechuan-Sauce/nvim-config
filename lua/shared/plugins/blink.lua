@@ -1,5 +1,9 @@
 return {
-    keymap = { preset = 'enter' },
+    keymap = {
+        preset = 'enter',
+        ['<TAB>'] = { 'select_next', 'fallback' },
+        ['<S-TAB>'] = { 'select_prev', 'fallback' },
+    },
 
     appearance = {
         use_nvim_cmp_as_default = true,
