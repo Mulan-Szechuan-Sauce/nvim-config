@@ -40,47 +40,56 @@ function get_buf_dir()
     return vim.fn.expand("%:p:h")
 end
 
-function fzf_find_file(cwd)
-    if cwd == nil then
-        cwd = vim.loop.cwd()
-    end
-    local fzf = require('fzf-lua')
-    fzf.files({
-        cwd = cwd,
-        fd_opts = '--color=never --hidden --follow --exclude .git --max-depth 1',
+function snacks_find_file()
+    local cwd = vim.loop.cwd()
+    local sp = require('snacks.picker')
+    sp.files({
+        cmd = 'fd',
+        args = { '--color=never', '--hidden', '--follow', '--exclude', '.git', '--max-depth', '1' },
         actions = {
-            ['default'] = { 
-                function(selected, opts)
+            confirm = {
+                action = function(picker, selected)
                     -- If we have no selection, we want to create a new file
-                    if #selected == 0 then
-                        local new_file = cwd .. '/' .. fzf.get_last_query()
-                        fzf.win.win_leave()
-                        vim.cmd('e ' .. new_file)
+                    if selected.score == 0 then
+                        local new_file = cwd .. '/' .. picker:filter().pattern
+                        picker:close()
+                        vim.cmd.edit(new_file)
                         return
                     end
 
-                    local file = fzf.path.entry_to_file(selected[1], opts)
-
+                    local file = cwd .. '/' .. selected.file
                     -- If the selection is a directory recurse otherwise open the file
-                    if vim.fn.isdirectory(file.path) ~= 0 then
-                        fzf_find_file(file.path)
+                    if vim.fn.isdirectory(file) ~= 0 then
+                        cwd = file
+                        picker:set_cwd(file)
+                        picker:find()
                     else
-                        fzf.win.win_leave()
-                        fzf.actions.file_edit(selected, opts)
+                        picker:close()
+                        vim.cmd.edit(file)
                     end
-                end
+                end,
             },
-            ['ctrl-w'] = {
-                function()
-                    local new_cwd = vim.loop.fs_realpath(cwd .. '/..')
-                    fzf_find_file(new_cwd)
-                end
+            parent = {
+                action = function(picker, selected)
+                    cwd = vim.loop.fs_realpath(cwd .. '/..')
+                    picker:set_cwd(cwd)
+                    picker:find()
+                end,
             },
-            ['alt-c'] = {
-                function()
+            cd = {
+                action = function(picker, selected)
+                    cwd = vim.loop.fs_realpath(cwd .. '/' .. selected.file)
                     vim.cmd('tcd ' .. cwd)
-                    fzf.actions.resume()
-                end
+                    picker:find()
+                end,
+            },
+        },
+        win = {
+            input = {
+                keys = {
+                    ['<c-w>'] = { 'parent', mode = { 'i', 'n' } },
+                    ['<m-c>'] = { 'cd', mode = { 'i', 'n' } },
+                },
             },
         },
     })
