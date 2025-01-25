@@ -49,11 +49,12 @@ function snacks_git_file_root()
 end
 
 function snacks_find_file()
-    local cwd = vim.loop.cwd()
+    local cwd = get_buf_dir()
     local sp = require('snacks.picker')
     sp.files({
+        cwd = cwd,
         cmd = 'fd',
-        args = { '--color=never', '--hidden', '--follow', '--exclude', '.git', '--max-depth', '1' },
+        args = { '--hidden', '--follow', '--max-depth', '1', '--type', 'd' },
         actions = {
             confirm = {
                 action = function(picker, selected)
@@ -66,8 +67,10 @@ function snacks_find_file()
                     end
 
                     local file = cwd .. '/' .. selected.file
+
                     -- If the selection is a directory recurse otherwise open the file
                     if vim.fn.isdirectory(file) ~= 0 then
+                        file = file:sub(1, #file - 1) -- Trim trailing slash if it's a directory
                         cwd = file
                         picker:set_cwd(file)
                         picker:find()
