@@ -44,7 +44,7 @@ function snacks_git_file_root()
     local git_root = vim.fs.root('.', ".git")
     require('snacks.picker').git_files({
         cwd = git_root,
-        args = { "-c", "core.quotepath=false", "ls-files", "--exclude-standard", "--cached", "--others", "--full-name", ":/" }
+        args = { "-c", "core.quotepath=false", "ls-files", "--exclude-standard", "--cached", "--others", "--full-name", ":/" },
     })
 end
 

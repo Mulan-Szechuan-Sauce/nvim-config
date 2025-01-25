@@ -60,14 +60,20 @@ return {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
-    ---@type snacks.Config
-    opts = {
-        picker = { enabled = true },
-        bufdelete = { enabled = true },
-        gitbrowse = { enabled = true },
-        lazygit = { enabled = true },
-    },
     config = function()
+        require('snacks').setup({
+            picker = {
+                formatters = {
+                    file = {
+                        truncate = 100,
+                    },
+                },
+            },
+            bufdelete = { enabled = true },
+            gitbrowse = { enabled = true },
+            lazygit = { enabled = true },
+        })
+
         vim.cmd [[highlight SnacksPickerDir guifg='#BCBCBC']]
     end,
 },
