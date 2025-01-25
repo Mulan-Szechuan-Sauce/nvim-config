@@ -40,6 +40,12 @@ function get_buf_dir()
     return vim.fn.expand("%:p:h")
 end
 
+function snacks_git_file_root()
+    require('snacks.picker').git_files({
+        args = { "-c", "core.quotepath=false", "ls-files", "--exclude-standard", "--cached", "--full-name", ":/" }
+    })
+end
+
 function snacks_find_file()
     local cwd = vim.loop.cwd()
     local sp = require('snacks.picker')
