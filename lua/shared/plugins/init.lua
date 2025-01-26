@@ -70,6 +70,7 @@ return {
                 },
             },
             bufdelete = { enabled = true },
+            git = { enabled = true },
             gitbrowse = { enabled = true },
             lazygit = { enabled = true },
         })
