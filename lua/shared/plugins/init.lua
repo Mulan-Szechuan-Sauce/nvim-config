@@ -73,9 +73,11 @@ return {
             git = { enabled = true },
             gitbrowse = { enabled = true },
             lazygit = { enabled = true },
+            dashboard = require('shared.plugins.dashboard'),
         })
 
         vim.cmd [[highlight SnacksPickerDir guifg='#BCBCBC']]
+        vim.cmd [[highlight SnacksDashboardDir guifg='#BCBCBC']]
     end,
 },
 

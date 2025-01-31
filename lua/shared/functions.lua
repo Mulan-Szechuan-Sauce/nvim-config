@@ -40,14 +40,6 @@ function get_buf_dir()
     return vim.fn.expand("%:p:h")
 end
 
-function snacks_git_file_root()
-    local git_root = vim.fs.root('.', ".git")
-    require('snacks.picker').git_files({
-        cwd = git_root,
-        args = { "-c", "core.quotepath=false", "ls-files", "--exclude-standard", "--cached", "--others", "--full-name", ":/" },
-    })
-end
-
 function snacks_find_file()
     local cwd = get_buf_dir()
     local sp = require('snacks.picker')
@@ -73,6 +65,7 @@ function snacks_find_file()
                         file = file:sub(1, #file - 1) -- Trim trailing slash if it's a directory
                         cwd = file
                         picker:set_cwd(file)
+                        picker.input:set("", "")
                         picker:find()
                     else
                         picker:close()
