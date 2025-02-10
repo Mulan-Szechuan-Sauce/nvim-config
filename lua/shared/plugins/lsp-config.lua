@@ -1,15 +1,16 @@
 local lspconfig = require('lspconfig')
 
 -- Make sure neodev runs before any lspconfig
-require('neodev').setup({
-    override = function(root_dir, library)
+require('lazydev').setup({
+    library = {
+        vim.fn.stdpath('config'),
+    },
+    enabled = function(root_dir)
         -- If the repo/project root is dotfiles assume we're in a user.nvim config and enable
         if root_dir:match('dotfiles$') or root_dir:find('.config/nvim') or root_dir:find('%.nvim') then
-            library.enabled = true
-            library.runtime = true
-            library.types = true
-            library.plugins = true
+            return true
         end
+        return false
     end,
 })
 require('mason').setup()
@@ -96,23 +97,23 @@ for _, method in ipairs({ 'textDocument/diagnostic', 'workspace/diagnostic' }) d
     end
 end
 
-vim.cmd [[autocmd! ColorScheme * highlight NormalFloat guibg=#1f2335]]
-vim.cmd [[autocmd! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]]
-
-local border = {
-    { "┏", "FloatBorder" },
-    { "━", "FloatBorder" },
-    { "┓", "FloatBorder" },
-    { "┃", "FloatBorder" },
-    { "┛", "FloatBorder" },
-    { "━", "FloatBorder" },
-    { "┗", "FloatBorder" },
-    { "┃", "FloatBorder" },
-}
-
-local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
-function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
-    opts = opts or {}
-    opts.border = opts.border or border
-    return orig_util_open_floating_preview(contents, syntax, opts, ...)
-end
+-- vim.cmd [[autocmd! ColorScheme * highlight NormalFloat guibg=#1f2335]]
+-- vim.cmd [[autocmd! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]]
+--
+-- local border = {
+--     { "┏", "FloatBorder" },
+--     { "━", "FloatBorder" },
+--     { "┓", "FloatBorder" },
+--     { "┃", "FloatBorder" },
+--     { "┛", "FloatBorder" },
+--     { "━", "FloatBorder" },
+--     { "┗", "FloatBorder" },
+--     { "┃", "FloatBorder" },
+-- }
+--
+-- local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+-- function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+--     opts = opts or {}
+--     opts.border = opts.border or border
+--     return orig_util_open_floating_preview(contents, syntax, opts, ...)
+-- end

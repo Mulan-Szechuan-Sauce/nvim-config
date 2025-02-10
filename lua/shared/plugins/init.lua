@@ -76,8 +76,8 @@ return {
             dashboard = require('shared.plugins.dashboard'),
         })
 
-        vim.cmd [[highlight SnacksPickerDir guifg='#BCBCBC']]
-        vim.cmd [[highlight SnacksDashboardDir guifg='#BCBCBC']]
+        -- vim.cmd [[highlight SnacksPickerDir guifg='#BCBCBC']]
+        -- vim.cmd [[highlight SnacksDashboardDir guifg='#BCBCBC']]
     end,
 },
 
@@ -97,7 +97,7 @@ return {
     end
 },
 
-'folke/neodev.nvim',
+'folke/lazydev.nvim',
 
 {
     'williamboman/mason.nvim',
