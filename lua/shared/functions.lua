@@ -51,7 +51,7 @@ function snacks_find_file()
             confirm = {
                 action = function(picker, selected)
                     -- If we have no selection, we want to create a new file
-                    if selected.score == 0 then
+                    if selected == nil then
                         local new_file = cwd .. '/' .. picker:filter().pattern
                         picker:close()
                         vim.cmd.edit(new_file)
