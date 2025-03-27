@@ -65,7 +65,7 @@ return {
             picker = {
                 formatters = {
                     file = {
-                        truncate = 100,
+                        truncate = calc_snacks_filename_width(),
                     },
                 },
             },
