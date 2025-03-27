@@ -259,11 +259,3 @@ function run_cmd_in_floating_window(cmd, cwd)
 
     return output
 end
-
-function calc_snacks_filename_width()
-    local size = vim.api.nvim_list_uis()[1]
-    -- Snacks takes up 80% of the screen and is split into 2x 50% columns
-    local snacks_file_width = vim.fn.floor(0.8 * 0.5 * size.width);
-
-    return snacks_file_width
-end

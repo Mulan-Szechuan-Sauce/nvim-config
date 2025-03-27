@@ -62,18 +62,23 @@ return {
     lazy = false,
     config = function()
         require('snacks').setup({
-            picker = {
-                formatters = {
-                    file = {
-                        truncate = calc_snacks_filename_width(),
-                    },
-                },
-            },
             bufdelete = { enabled = true },
             git = { enabled = true },
             gitbrowse = { enabled = true },
             dashboard = require('shared.plugins.dashboard'),
         })
+
+
+        local original_truncpath = Snacks.picker.util.truncpath
+        function dynamic_width_truncpath(path, _len, opts)
+            local size = vim.api.nvim_list_uis()[1]
+            -- Snacks takes up 80% of the screen and is split into 2x 50% columns
+            local snacks_file_width = vim.fn.floor(0.8 * 0.5 * size.width);
+
+            print(snacks_file_width)
+            return original_truncpath(path, snacks_file_width, opts)
+        end
+        Snacks.picker.util.truncpath = dynamic_width_truncpath
 
         -- vim.cmd [[highlight SnacksPickerDir guifg='#BCBCBC']]
         -- vim.cmd [[highlight SnacksDashboardDir guifg='#BCBCBC']]
