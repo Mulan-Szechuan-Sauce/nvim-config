@@ -72,7 +72,6 @@ return {
             bufdelete = { enabled = true },
             git = { enabled = true },
             gitbrowse = { enabled = true },
-            lazygit = { enabled = true },
             dashboard = require('shared.plugins.dashboard'),
         })
 
@@ -147,15 +146,28 @@ return {
 },
 
 'gpanders/editorconfig.nvim',
-
 'github/copilot.vim',
 'sindrets/diffview.nvim',
 
 {
+    'stevearc/oil.nvim',
+    opts = {},
+},
+
+{
+    'NeogitOrg/neogit',
+    dependencies = {
+        'nvim-lua/plenary.nvim',
+        'sindrets/diffview.nvim',
+    },
+    config = true,
+},
+
+{
     "cbochs/grapple.nvim",
-    -- opts = {
-    --     scope = "cwd",
-    -- },
+    opts = {
+        scope = "git",
+    },
 },
 
 
