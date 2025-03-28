@@ -73,7 +73,7 @@ return {
         function dynamic_width_truncpath(path, _len, opts)
             local size = vim.api.nvim_list_uis()[1]
             -- Snacks takes up 80% of the screen and is split into 2x 50% columns
-            local snacks_file_width = vim.fn.floor(0.8 * 0.5 * size.width);
+            local snacks_file_width = vim.fn.floor(0.8 * 0.5 * size.width) - 3;
 
             print(snacks_file_width)
             return original_truncpath(path, snacks_file_width, opts)
