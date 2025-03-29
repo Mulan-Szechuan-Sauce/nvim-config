@@ -62,6 +62,7 @@ return {
     lazy = false,
     config = function()
         require('snacks').setup({
+            picker = { enabled = true, },
             bufdelete = { enabled = true },
             git = { enabled = true },
             gitbrowse = { enabled = true },
