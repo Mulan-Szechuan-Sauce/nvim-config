@@ -66,7 +66,6 @@ return {
             bufdelete = { enabled = true },
             git = { enabled = true },
             gitbrowse = { enabled = true },
-            dashboard = require('shared.plugins.dashboard'),
         })
 
 
