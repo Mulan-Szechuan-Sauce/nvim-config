@@ -105,10 +105,11 @@ return {
 
 {
     'williamboman/mason.nvim',
+    branch = 'v1.x',
     dependencies = {
         'mrjones2014/legendary.nvim',
-        'williamboman/mason-lspconfig.nvim',
         'neovim/nvim-lspconfig',
+        { 'williamboman/mason-lspconfig.nvim', branch = 'v1.x' },
     },
     config = function()
         require('shared.plugins.lsp-config')
