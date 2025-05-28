@@ -13,8 +13,6 @@ require('lazydev').setup({
         return false
     end,
 })
-require('mason').setup()
-require('mason-lspconfig').setup()
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -42,49 +40,31 @@ local on_attach = function(client, bufnr)
     user_on_lsp_attach(client, bufnr)
 end
 
-local setup_lsp = function(server_name, overrides)
-    local opts = {
-        on_attach = on_attach,
-        capabilities = require('blink.cmp').get_lsp_capabilities(),
-    }
-    lspconfig[server_name].setup(
-        vim.tbl_extend('force', opts, overrides)
-    )
-end
+-- Default LSP settings
+vim.lsp.config('*', {
+    on_attach = on_attach,
+    capabilities = require('blink.cmp').get_lsp_capabilities(),
+})
 
-local make_setup_handlers = function()
-    local default_lsp_overrides = {
-        function(server_name)
-            setup_lsp(server_name, {})
-        end,
-        svelte = function()
-            setup_lsp('svelte', {
-                on_attach = function(client, bufnr)
-                    -- First call our standard on_attach
-                    on_attach(client, bufnr)
+vim.lsp.config('svelte', {
+    on_attach = function(client, bufnr)
+        -- First call our standard on_attach
+        on_attach(client, bufnr)
 
-                    -- Then this workaround https://github.com/sveltejs/language-tools/issues/2008#issuecomment-2351976230
-                    vim.api.nvim_create_autocmd('BufWritePost', {
-                        pattern = { '*.js', '*.ts' },
-                        group = vim.api.nvim_create_augroup('svelte_ondidchangetsorjsfile', { clear = true }),
-                        callback = function(ctx)
-                            client.notify('$/onDidChangeTsOrJsFile', { uri = ctx.match })
-                        end,
-                    })
-                end,
-            })
-        end,
-    }
+        -- Then this workaround https://github.com/sveltejs/language-tools/issues/2008#issuecomment-2351976230
+        vim.api.nvim_create_autocmd('BufWritePost', {
+            pattern = { '*.js', '*.ts' },
+            group = vim.api.nvim_create_augroup('svelte_ondidchangetsorjsfile', { clear = true }),
+            callback = function(ctx)
+                client.notify('$/onDidChangeTsOrJsFile', { uri = ctx.match })
+            end,
+        })
+    end,
+})
 
-    for server_name, value in pairs(user_lsp_overrides) do
-        default_lsp_overrides[server_name] = function()
-            setup_lsp(server_name, value)
-        end
-    end
-    return default_lsp_overrides
-end
+require('mason').setup()
+require('mason-lspconfig').setup()
 
-require("mason-lspconfig").setup_handlers(make_setup_handlers())
 
 -- TODO: https://github.com/neovim/neovim/issues/30985 remove this workaround when possible
 for _, method in ipairs({ 'textDocument/diagnostic', 'workspace/diagnostic' }) do
