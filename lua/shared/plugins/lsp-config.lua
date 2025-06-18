@@ -40,9 +40,18 @@ local on_attach = function(client, bufnr)
     user_on_lsp_attach(client, bufnr)
 end
 
+vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if not client then
+            return
+        end
+        on_attach(client, args.buf)
+    end,
+})
+
 -- Default LSP settings
 vim.lsp.config('*', {
-    on_attach = on_attach,
     capabilities = require('blink.cmp').get_lsp_capabilities(),
 })
 
