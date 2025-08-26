@@ -4,7 +4,7 @@ return {
 'nvim-tree/nvim-web-devicons',
 
 {
-    'mrjones2014/legendary.nvim',
+    'elimirks/legendary.nvim',
     config = function()
         require('legendary').setup()
         require('shared.commands')
@@ -106,7 +106,7 @@ return {
 {
     'williamboman/mason.nvim',
     dependencies = {
-        'mrjones2014/legendary.nvim',
+        'elimirks/legendary.nvim',
         'neovim/nvim-lspconfig',
         'williamboman/mason-lspconfig.nvim',
     },
@@ -127,7 +127,7 @@ return {
 {
     'mfussenegger/nvim-dap',
     dependencies = {
-        'mrjones2014/legendary.nvim',
+        'elimirks/legendary.nvim',
         'nvim-neotest/nvim-nio',
         'rcarriga/nvim-dap-ui',
         'Weissle/persistent-breakpoints.nvim',
