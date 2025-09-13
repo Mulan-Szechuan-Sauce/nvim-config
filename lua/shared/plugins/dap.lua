@@ -132,7 +132,7 @@ dap.configurations.go = {
 
 vim.fn.sign_define('DapBreakpoint', { text = '🛑', texthl = '', linehl = '', numhl = '' })
 
-dapui.setup({
+local default_dapui_config = {
     icons = { expanded = "▾", collapsed = "▸" },
     mappings = {
         -- Use a table to apply multiple mappings
@@ -185,7 +185,10 @@ dapui.setup({
     render = {
         max_type_length = nil, -- Can be integer or nil.
     }
-});
+};
+
+-- Merge any overrides from the users config
+dapui.setup(vim.tbl_extend('force', default_dapui_config, vim.g.user_config.dapui_config or {}));
 
 -- Auto open dapui on debug
 dap.listeners.after.event_initialized["dapui_config"] = function()

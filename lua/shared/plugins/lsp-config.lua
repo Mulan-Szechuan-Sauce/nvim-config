@@ -37,7 +37,7 @@ local on_attach = function(client, bufnr)
         end
     })
 
-    user_on_lsp_attach(client, bufnr)
+    vim.g.user_config.on_lsp_attach(client, bufnr)
 end
 
 vim.api.nvim_create_autocmd("LspAttach", {

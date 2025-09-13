@@ -1,8 +1,6 @@
-require('shared.functions')
-
-require_user_config()
+require('shared.functions').require_user_config()
 
 require('shared.options')
 require('shared.bootstrap')
 
-user_config()
+vim.g.user_config.config()
