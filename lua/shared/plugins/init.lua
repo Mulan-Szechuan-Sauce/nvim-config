@@ -4,12 +4,20 @@ return {
 'nvim-tree/nvim-web-devicons',
 
 {
-    'elimirks/legendary.nvim',
-    config = function()
-        require('legendary').setup()
-        require('shared.commands')
-        require('shared.autocommands')
-    end,
+    'folke/which-key.nvim',
+    event = 'VeryLazy',
+    opts = {
+        triggers = {},
+    },
+    keys = {
+        {
+            '<leader>?',
+            function()
+                require('which-key').show({ global = false })
+            end,
+            desc = 'Buffer Local Keymaps (which-key)',
+        },
+    },
 },
 
 'tpope/vim-surround',
@@ -20,8 +28,17 @@ return {
 'sbdchd/neoformat',
 
 {
-    'ggandor/leap.nvim',
-    config = function() require('leap').set_default_keymaps() end
+    'folke/flash.nvim',
+    event = 'VeryLazy',
+    ---@type Flash.Config
+    opts = {},
+    keys = {
+        { 's', mode = { 'n', 'x', 'o' }, function() require('flash').jump() end, desc = 'Flash' },
+        { 'S', mode = { 'n', 'x', 'o' }, function() require('flash').treesitter() end, desc = 'Flash Treesitter' },
+        { 'r', mode = 'o', function() require('flash').remote() end, desc = 'Remote Flash' },
+        { 'R', mode = { 'o', 'x' }, function() require('flash').treesitter_search() end, desc = 'Treesitter Search' },
+        { '<c-s>', mode = { 'c' }, function() require('flash').toggle() end, desc = 'Toggle Flash Search' },
+    },
 },
 
 {
@@ -63,6 +80,7 @@ return {
     config = function()
         require('snacks').setup({
             picker = { enabled = true, },
+            input = { enabled = true },
             bufdelete = { enabled = true },
             git = { enabled = true },
             gitbrowse = { enabled = true },
@@ -74,8 +92,6 @@ return {
             local size = vim.api.nvim_list_uis()[1]
             -- Snacks takes up 80% of the screen and is split into 2x 50% columns
             local snacks_file_width = vim.fn.floor(0.8 * 0.5 * size.width) - 3;
-
-            print(snacks_file_width)
             return original_truncpath(path, snacks_file_width, opts)
         end
         Snacks.picker.util.truncpath = dynamic_width_truncpath
@@ -106,7 +122,6 @@ return {
 {
     'williamboman/mason.nvim',
     dependencies = {
-        'elimirks/legendary.nvim',
         'neovim/nvim-lspconfig',
         'williamboman/mason-lspconfig.nvim',
     },
@@ -127,7 +142,6 @@ return {
 {
     'mfussenegger/nvim-dap',
     dependencies = {
-        'elimirks/legendary.nvim',
         'nvim-neotest/nvim-nio',
         'rcarriga/nvim-dap-ui',
         'Weissle/persistent-breakpoints.nvim',
@@ -169,12 +183,15 @@ return {
 },
 
 {
-    "cbochs/grapple.nvim",
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { {'nvim-lua/plenary.nvim'} },
     opts = {
-        scope = "git",
+        settings = {
+            save_on_toggle = true,
+        }
     },
 },
-
 
 {
     'WolfeCub/harpeek.nvim',
