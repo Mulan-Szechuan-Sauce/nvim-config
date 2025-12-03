@@ -1,5 +1,5 @@
 ---@class mss.config
----@field install_plugins fun()
+---@field install_plugins fun(): LazyPluginSpec
 ---@field on_lsp_attach fun(client: vim.lsp.Client, bufnr: integer)
 ---@field config fun()
 ---@field dapui_config dapui.Config | nil
