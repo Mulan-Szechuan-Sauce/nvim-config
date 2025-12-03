@@ -1,6 +1,8 @@
 local dap = require('dap');
 local dapui = require('dapui');
 
+local f = require('shared.functions')
+
 function get_dll_paths()
     local cwd = vim.fn.getcwd();
     local sln_file = vim.fn.globpath(cwd, '*.sln');
@@ -66,8 +68,11 @@ dap.configurations.rust = {
         cwd = '${workspaceFolder}',
         stopOnEntry = false,
         args = function()
-            local args = vim.fn.input('Args: ')
-            return { '--', args }
+            local input = vim.fn.input('Args: ')
+            if input == "" then return {} end
+            local t = { "--" }
+            vim.list_extend(t, vim.split(input, "%s+"))
+            return t
         end,
     },
     {
@@ -132,7 +137,7 @@ dap.configurations.go = {
 
 vim.fn.sign_define('DapBreakpoint', { text = '🛑', texthl = '', linehl = '', numhl = '' })
 
-dapui.setup({
+local default_dapui_config = {
     icons = { expanded = "▾", collapsed = "▸" },
     mappings = {
         -- Use a table to apply multiple mappings
@@ -185,19 +190,28 @@ dapui.setup({
     render = {
         max_type_length = nil, -- Can be integer or nil.
     }
-});
+};
+
+-- Merge any overrides from the users config
+dapui.setup(vim.tbl_extend('force', default_dapui_config, vim.g.user_config.dapui_config or {}));
 
 -- Auto open dapui on debug
 dap.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open();
 end
-dap.listeners.before.event_terminated["dapui_config"] = function()
-    dapui.close();
+-- Be very careful about having this run multiple times i.e. on multiple exit events
+local function prompt_close()
+    vim.ui.select({'No', 'Yes'}, { prompt = 'Keep DAP UI open?' }, function(choice)
+        if choice ~= 'Yes' then
+            dapui.close();
+        end
+    end)
 end
-dap.listeners.before.event_exited["dapui_config"] = function()
-    dapui.close();
-end
-
+-- event_exited (Exited Event):         is triggered when the program (debuggee) you are debugging exits with an exit code.
+-- event_terminated (Terminated Event): is triggered when the debugger is terminated (does not mean the debuggee has exited,
+--                                      for instance in server applications to which debuggers are attached)
+dap.listeners.before.event_terminated["dapui_config"] = prompt_close
+dap.listeners.before.event_exited["dapui_config"] = function() end
 
 require('persistent-breakpoints').setup({});
 -- automatically load breakpoints when a file is loaded into the buffer.

@@ -1,4 +1,6 @@
-function require_user_config()
+local functions = {};
+
+function functions.require_user_config()
     local config_paths = {
         os.getenv("MSS_NEOVIM_USER_DIR") or "GARBAGE",
         "~/local/src/user.nvim/",
@@ -18,17 +20,17 @@ function require_user_config()
     end
 end
 
-function require_viml(vimlConfigPath)
+function functions.require_viml(vimlConfigPath)
     vim.cmd(string.format('source %s/viml/%s', vim.g.user_config_path, vimlConfigPath))
 end
 
-function open_toggle_term()
+function functions.open_toggle_term()
     vim.cmd(
         string.format("ToggleTerm ToggleTerm direction=vertical size=%d", vim.api.nvim_list_uis()[1].width * 0.4)
     )
 end
 
-function alt_buf_with_fallback()
+function functions.alt_buf_with_fallback()
     if vim.fn.bufnr('#') == -1 then
         vim.cmd('bnext')
     else
@@ -36,12 +38,12 @@ function alt_buf_with_fallback()
     end
 end
 
-function get_buf_dir()
+function functions.get_buf_dir()
     return vim.fn.expand("%:p:h")
 end
 
-function snacks_find_file()
-    local cwd = get_buf_dir()
+function functions.snacks_find_file()
+    local cwd = functions.get_buf_dir()
     local sp = require('snacks.picker')
     sp.files({
         cwd = cwd,
@@ -99,11 +101,11 @@ function snacks_find_file()
     })
 end
 
-function fzf_path_aliases(path_aliases, root)
+function functions.fzf_path_aliases(path_aliases, root)
     local fzf = require('fzf-lua')
 
     local dirs = ""
-    for k,_ in pairs(path_aliases) do
+    for k, _ in pairs(path_aliases) do
         dirs = dirs .. " " .. k
     end
 
@@ -115,6 +117,7 @@ function fzf_path_aliases(path_aliases, root)
         setmetatable(self, UnshortenerPreviewer)
         return self
     end
+
     function UnshortenerPreviewer:parse_entry(entry_str)
         local path = fzf.path.entry_to_file(entry_str).path
         local full_path = root .. '/' .. reverse_map[path]
@@ -127,12 +130,12 @@ function fzf_path_aliases(path_aliases, root)
         cwd = root,
         previewer = UnshortenerPreviewer,
         fn_transform = function(item)
-            for k,v in pairs(path_aliases) do
+            for k, v in pairs(path_aliases) do
                 local prefix = item:sub(0, k:len())
                 if k == prefix then
                     local shortened = item:gsub(prefix, v)
                     reverse_map[shortened] = item
-                    return fzf.make_entry.file(shortened, {file_icons=true, color_icons=true})
+                    return fzf.make_entry.file(shortened, { file_icons = true, color_icons = true })
                 end
             end
         end,
@@ -171,7 +174,7 @@ local function open_current_tsnode_in_scratch_buf()
     -- Strip leading indent
     local indent = text[1]:match("^%s*")
     for k, v in pairs(text) do
-        text[k] = v:sub(indent:len()+1, -1)
+        text[k] = v:sub(indent:len() + 1, -1)
     end
 
     local original_buf = vim.api.nvim_get_current_buf()
@@ -185,8 +188,8 @@ local function open_current_tsnode_in_scratch_buf()
     vim.api.nvim_win_set_cursor(0, { cursor_row - start_row, cursor_col })
     vim.api.nvim_buf_set_name(tmp_buf, '*narrow-tmp*')
 
-    vim.api.nvim_create_autocmd({'BufDelete'}, {
-        pattern = {'<buffer>'},
+    vim.api.nvim_create_autocmd({ 'BufDelete' }, {
+        pattern = { '<buffer>' },
         callback = function()
             -- TODO: Figure out how to set the cursor in another buffer
             -- local tmp_cursor_row, tmp_cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -203,7 +206,7 @@ local function open_current_tsnode_in_scratch_buf()
     })
 end
 
-function narrow_to_function()
+function functions.narrow_to_function()
     if string.find(vim.api.nvim_buf_get_name(0), '*narrow-tmp*', nil, true) then
         vim.api.nvim_buf_delete(0, {})
     else
@@ -211,11 +214,10 @@ function narrow_to_function()
     end
 end
 
-
 -- TODO: Control characters aren't handled. Fancy progress bars (and similar won't work)
-function run_cmd_in_floating_window(cmd, cwd)
+function functions.run_cmd_in_floating_window(cmd, cwd)
     local tmp_buf = vim.api.nvim_create_buf(true, true)
-    vim.api.nvim_buf_set_keymap(tmp_buf, 'n', 'q', '<cmd>q<cr>', {noremap=true})
+    vim.api.nvim_buf_set_keymap(tmp_buf, 'n', 'q', '<cmd>q<cr>', { noremap = true })
 
     local size = vim.api.nvim_list_uis()[1]
     local width = vim.fn.floor(size.width * 0.8)
@@ -228,7 +230,7 @@ function run_cmd_in_floating_window(cmd, cwd)
         width = width,
         height = height,
         border = 'single',
-        style= 'minimal'
+        style = 'minimal'
     })
 
     local output = {}
@@ -247,7 +249,8 @@ function run_cmd_in_floating_window(cmd, cwd)
     end
 
     local exit_code = 0
-    local j = vim.fn.jobstart(cmd, { cwd = cwd, on_stdout = print_stdout, on_exit = function(_, code) exit_code = code end })
+    local j = vim.fn.jobstart(cmd,
+        { cwd = cwd, on_stdout = print_stdout, on_exit = function(_, code) exit_code = code end })
 
     -- This blocks
     vim.fn.jobwait({ j })
@@ -259,3 +262,5 @@ function run_cmd_in_floating_window(cmd, cwd)
 
     return output
 end
+
+return functions

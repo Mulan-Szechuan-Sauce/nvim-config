@@ -1,14 +1,7 @@
-require('legendary').autocmds({
-    { 'TermOpen', function()
-        -- Disable line numbers and signcolumn in terminal buffers
-        vim.cmd('setlocal nonumber norelativenumber')
-        vim.cmd('setlocal signcolumn=no')
-    end },
+vim.api.nvim_create_autocmd(
+    { 'BufRead', 'BufNewFile' },
     {
-        { 'BufRead', 'BufNewFile' },
-        ':set filetype=python',
-        opts = {
-            pattern = { '*.pyst' },
-        },
-    },
-})
+        pattern = { '*.pyst' },
+        command = 'set filetype=python',
+    }
+)
