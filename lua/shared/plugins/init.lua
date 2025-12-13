@@ -28,13 +28,11 @@ return {
 'sbdchd/neoformat',
 
 {
-    'folke/flash.nvim',
-    event = 'VeryLazy',
-    ---@type Flash.Config
-    opts = {},
-    keys = {
-        { 's', mode = 'n', function() require('flash').jump() end, desc = 'Flash' },
-    },
+    'https://codeberg.org/andyg/leap.nvim',
+    config = function()
+        vim.keymap.set({'n', 'x', 'o'}, 's', '<Plug>(leap)')
+        vim.keymap.set('n',             'S', '<Plug>(leap-from-window)')
+    end
 },
 
 {
