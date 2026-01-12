@@ -4,7 +4,7 @@ local parsers = require("nvim-treesitter.parsers")
 ---@param event vim.api.keyset.create_autocmd.callback_args
 local install_parser_and_enable_features = function(event)
     local buf = event.buf
-    local lang = vim.treesitter.language.get_lang(vim.bo[buf].filetype)
+    local lang = vim.treesitter.language.get_lang(event.match)
 
     -- If it's not a valid lang no need to prompt
     if not lang or not parsers[lang] then
