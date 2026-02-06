@@ -59,13 +59,27 @@ function functions.snacks_find_file()
         return vim.fn.fnamemodify(path, ':~')
     end
 
+    ---@param dir string
     ---@param picker snacks.Picker
-    ---@param selected snacks.picker.Item
-    local function parent_action(picker)
-        cwd = vim.loop.fs_realpath(cwd .. '/..')
+    local function goto_dir(dir, picker)
+        cwd = dir
         picker:set_cwd(cwd)
-        picker.title = make_title(cwd)
+        picker.title = make_title(dir)
+        picker.input:set("", "")
         picker:find()
+    end
+
+    ---@param path string
+    ---@param picker snacks.Picker
+    local function edit_file(path, picker)
+        picker:close()
+        vim.cmd.edit(path)
+    end
+
+    ---@param picker snacks.Picker
+    local function parent_action(picker)
+        local parent = vim.loop.fs_realpath(cwd .. '/..')
+        goto_dir(parent, picker)
     end
 
     sp.files({
@@ -76,27 +90,17 @@ function functions.snacks_find_file()
         actions = {
             confirm = {
                 action = function(picker, selected)
-                    -- If we have no selection, we want to create a new file
-                    if selected == nil then
-                        local new_file = cwd .. '/' .. picker:filter().pattern
-                        picker:close()
-                        vim.cmd.edit(new_file)
-                        return
-                    end
+                    local input = picker:filter().pattern
+                    -- If we've selected something use it. Otherwise let's go wherever we've typed.
+                    local path = selected and (cwd .. '/' .. selected.file) or vim.fn.expand(input)
 
-                    local file = cwd .. '/' .. selected.file
+                    -- Strip trailing slash. This controls if the full path is displayed.
+                    path = path:gsub("/$", "")
 
-                    -- If the selection is a directory recurse otherwise open the file
-                    if vim.fn.isdirectory(file) ~= 0 then
-                        file = file:sub(1, #file - 1) -- Trim trailing slash if it's a directory
-                        cwd = file
-                        picker:set_cwd(file)
-                        picker.input:set("", "")
-                        picker.title = make_title(cwd)
-                        picker:find()
+                    if vim.fn.isdirectory(path) then
+                        goto_dir(path, picker)
                     else
-                        picker:close()
-                        vim.cmd.edit(file)
+                        edit_file(path, picker)
                     end
                 end,
             },
@@ -110,7 +114,7 @@ function functions.snacks_find_file()
                     picker:find()
                 end
             },
-            test = {
+            backspace = {
                 action = function(picker)
                     local input = picker:filter().pattern
 
@@ -133,7 +137,7 @@ function functions.snacks_find_file()
                 keys = {
                     ['<c-w>'] = { 'parent', mode = { 'i', 'n' } },
                     ['<m-c>'] = { 'cd', mode = { 'i', 'n' } },
-                    ['<backspace>'] = { 'test', mode = { 'i' } },
+                    ['<bs>'] = { 'backspace', mode = { 'i' } },
                 },
             },
         },
