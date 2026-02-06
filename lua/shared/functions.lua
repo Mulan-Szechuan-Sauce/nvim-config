@@ -93,7 +93,7 @@ function functions.snacks_find_file()
     end
 
 
-    local function check_dir_change(picker, selected)
+    local function check_dir_change(picker)
         local input = picker:filter().pattern
         if input == "" then return end
 
