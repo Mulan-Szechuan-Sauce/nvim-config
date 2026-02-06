@@ -59,6 +59,15 @@ function functions.snacks_find_file()
         return vim.fn.fnamemodify(path, ':~')
     end
 
+    ---@param picker snacks.Picker
+    ---@param selected snacks.picker.Item
+    local function parent_action(picker)
+        cwd = vim.loop.fs_realpath(cwd .. '/..')
+        picker:set_cwd(cwd)
+        picker.title = make_title(cwd)
+        picker:find()
+    end
+
     sp.files({
         title = make_title(cwd),
         cwd = cwd,
@@ -92,18 +101,30 @@ function functions.snacks_find_file()
                 end,
             },
             parent = {
-                action = function(picker, selected)
-                    cwd = vim.loop.fs_realpath(cwd .. '/..')
-                    picker:set_cwd(cwd)
-                    picker.title = make_title(cwd)
-                    picker:find()
-                end,
+                action = parent_action,
             },
             cd = {
                 action = function(picker, selected)
                     cwd = vim.loop.fs_realpath(cwd .. '/' .. selected.file)
                     vim.cmd('tcd ' .. cwd)
                     picker:find()
+                end
+            },
+            test = {
+                action = function(picker)
+                    local input = picker:filter().pattern
+
+                    -- If there's text, behave like normal backspace
+                    if input ~= nil and input ~= "" then
+                        vim.api.nvim_feedkeys(
+                            vim.api.nvim_replace_termcodes("<BS>", true, false, true),
+                            "n",
+                            false
+                        )
+                        return
+                    end
+
+                    parent_action(picker)
                 end,
             },
         },
@@ -112,6 +133,7 @@ function functions.snacks_find_file()
                 keys = {
                     ['<c-w>'] = { 'parent', mode = { 'i', 'n' } },
                     ['<m-c>'] = { 'cd', mode = { 'i', 'n' } },
+                    ['<backspace>'] = { 'test', mode = { 'i' } },
                 },
             },
         },
