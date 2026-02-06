@@ -82,6 +82,30 @@ function functions.snacks_find_file()
         goto_dir(parent, picker)
     end
 
+    ---@param input string
+    local function resolve_path(input)
+        -- If input starts with / or ~, expand it directly (ignore cwd)
+        if input:sub(1, 1) == "/" or input:sub(1, 1) == "~" then
+            return vim.fn.expand(input)
+        end
+        -- Otherwise, append to the custom cwd
+        return vim.fn.expand(cwd .. '/' .. input)
+    end
+
+
+    local function check_dir_change(picker, selected)
+        local input = picker:filter().pattern
+        if input == "" then return end
+
+        local path = resolve_path(input)
+        -- Don't cd until the user types the final / but make
+        -- sure to strip it like below so it will display correctly
+        if vim.fn.isdirectory(path) == 1 and path:match('/$') then
+            path = path:gsub("/$", "")
+            goto_dir(path, picker)
+        end
+    end
+
     sp.files({
         title = make_title(cwd),
         cwd = cwd,
@@ -92,12 +116,12 @@ function functions.snacks_find_file()
                 action = function(picker, selected)
                     local input = picker:filter().pattern
                     -- If we've selected something use it. Otherwise let's go wherever we've typed.
-                    local path = selected and (cwd .. '/' .. selected.file) or vim.fn.expand(input)
+                    local path = selected and (cwd .. '/' .. selected.file) or input
 
                     -- Strip trailing slash. This controls if the full path is displayed.
                     path = path:gsub("/$", "")
 
-                    if vim.fn.isdirectory(path) then
+                    if vim.fn.isdirectory(path) == 1 then
                         goto_dir(path, picker)
                     else
                         edit_file(path, picker)
@@ -141,6 +165,18 @@ function functions.snacks_find_file()
                 },
             },
         },
+        on_show = function(picker)
+            local buf = picker.input.win.buf
+            vim.api.nvim_create_autocmd('TextChangedI', {
+                buffer = buf,
+                callback = function()
+                    -- Schedule ensures the picker internal state is ready before we read it
+                    vim.schedule(function()
+                        check_dir_change(picker)
+                    end)
+                end,
+            })
+        end,
     })
 end
 
