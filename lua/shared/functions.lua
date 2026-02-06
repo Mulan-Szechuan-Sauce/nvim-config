@@ -45,7 +45,22 @@ end
 function functions.snacks_find_file()
     local cwd = functions.get_buf_dir()
     local sp = require('snacks.picker')
+
+    ---@param path string
+    ---@return string
+    local function make_title(path)
+        local git_root = require('snacks').git.get_root(path)
+        local remaining = git_root and path:sub(#git_root + 2)
+
+        if git_root and remaining ~= "" then
+            return vim.fs.basename(git_root) .. '/' .. remaining
+        end
+
+        return vim.fn.fnamemodify(path, ':~')
+    end
+
     sp.files({
+        title = make_title(cwd),
         cwd = cwd,
         cmd = 'fd',
         args = { '--hidden', '--follow', '--max-depth', '1', '--type', 'd' },
@@ -68,6 +83,7 @@ function functions.snacks_find_file()
                         cwd = file
                         picker:set_cwd(file)
                         picker.input:set("", "")
+                        picker.title = make_title(cwd)
                         picker:find()
                     else
                         picker:close()
@@ -79,6 +95,7 @@ function functions.snacks_find_file()
                 action = function(picker, selected)
                     cwd = vim.loop.fs_realpath(cwd .. '/..')
                     picker:set_cwd(cwd)
+                    picker.title = make_title(cwd)
                     picker:find()
                 end,
             },
