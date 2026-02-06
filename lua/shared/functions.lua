@@ -116,7 +116,7 @@ function functions.snacks_find_file()
             },
             backspace = {
                 action = function(picker)
-                    local input = picker:filter().pattern
+                    local input = vim.api.nvim_get_current_line()
 
                     -- If there's text, behave like normal backspace
                     if input ~= nil and input ~= "" then
