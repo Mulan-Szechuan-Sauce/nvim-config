@@ -51,7 +51,7 @@ function functions.smart_shorten_path(path, width)
     -- Iteratively shorten the first long directory found (e.g. "utils/" -> "u/")
     -- We stop as soon as the path fits the width.
     while #shortened > width do
-        local new_path, count = shortened:gsub("([^/])[^/]+/", "%1/", 1)
+        local new_path, count = shortened:gsub('([^/])[^/]+/', '%1/', 1)
 
         if count == 0 then break end
 
@@ -59,7 +59,7 @@ function functions.smart_shorten_path(path, width)
     end
 
     if #shortened > width then
-        shortened = "…" .. shortened:sub(-width + 1)
+        shortened = '…' .. shortened:sub(-width + 1)
     end
 
     return shortened
@@ -67,6 +67,7 @@ end
 
 function functions.snacks_find_file()
     local sp = require('snacks.picker')
+    local git = require('snacks.git')
     local cwd = functions.get_buf_dir()
 
     local size = vim.api.nvim_list_uis()[1]
@@ -78,17 +79,23 @@ function functions.snacks_find_file()
     ---@param path string
     ---@return string
     local function make_title(path)
-        local git_root = require('snacks').git.get_root(path)
-        local remaining = git_root and path:sub(#git_root + 2)
+        local relative = vim.fn.fnamemodify(path, ":.")
+        local title = vim.fs.basename(vim.uv.cwd()) .. '/' .. relative
 
-        local title = ""
-        if git_root and remaining ~= "" then
-            title = vim.fs.basename(git_root) .. '/' .. remaining
-        else
-            title = vim.fn.fnamemodify(path, ':~')
+        -- If relative path is "above" us '..' or absolute fallback
+        if vim.startswith(relative, '..') or vim.startswith(relative, '/') then
+            local git_root = git.get_root(path)
+
+            -- If we're in the git root let's show where we are
+            if git_root and path ~= git_root then
+                title = vim.fs.basename(git_root) .. '/' .. path:sub(#git_root + 2)
+            else
+                title = vim.fn.fnamemodify(path, ':~')
+            end
         end
 
-        return functions.smart_shorten_path(title, width)
+        -- Sorta dumb but makes sure there's exactly one trailing slash. Also handles '/'
+        return functions.smart_shorten_path(title, width):gsub("/$", "") .. '/'
     end
 
     ---@param dir string
@@ -133,7 +140,10 @@ function functions.snacks_find_file()
         -- Don't cd until the user types the final / but make
         -- sure to strip it like below so it will display correctly
         if vim.fn.isdirectory(path) == 1 and path:match('/$') then
-            path = path:gsub("/$", "")
+            -- We can't strip '/' or we'll get ""
+            if path ~= '/' then
+                path = path:gsub("/$", "")
+            end
             goto_dir(path, picker)
         end
     end
