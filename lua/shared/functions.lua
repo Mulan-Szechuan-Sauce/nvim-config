@@ -42,9 +42,38 @@ function functions.get_buf_dir()
     return vim.fn.expand("%:p:h")
 end
 
+---@param path string
+---@param width number
+---@return string
+function functions.smart_shorten_path(path, width)
+    local shortened = path
+
+    -- Iteratively shorten the first long directory found (e.g. "utils/" -> "u/")
+    -- We stop as soon as the path fits the width.
+    while #shortened > width do
+        local new_path, count = shortened:gsub("([^/])[^/]+/", "%1/", 1)
+
+        if count == 0 then break end
+
+        shortened = new_path
+    end
+
+    if #shortened > width then
+        shortened = "…" .. shortened:sub(-width + 1)
+    end
+
+    return shortened
+end
+
 function functions.snacks_find_file()
-    local cwd = functions.get_buf_dir()
     local sp = require('snacks.picker')
+    local cwd = functions.get_buf_dir()
+
+    local size = vim.api.nvim_list_uis()[1]
+    local layout = require("snacks.picker.config.layouts").default.layout
+
+    local multiplier = (vim.o.columns > layout.min_width) and 0.5 or 1
+    local width = vim.fn.floor(size.width * layout.width * multiplier) - 4
 
     ---@param path string
     ---@return string
@@ -52,11 +81,14 @@ function functions.snacks_find_file()
         local git_root = require('snacks').git.get_root(path)
         local remaining = git_root and path:sub(#git_root + 2)
 
+        local title = ""
         if git_root and remaining ~= "" then
-            return vim.fs.basename(git_root) .. '/' .. remaining
+            title = vim.fs.basename(git_root) .. '/' .. remaining
+        else
+            title = vim.fn.fnamemodify(path, ':~')
         end
 
-        return vim.fn.fnamemodify(path, ':~')
+        return functions.smart_shorten_path(title, width)
     end
 
     ---@param dir string
