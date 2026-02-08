@@ -110,7 +110,10 @@ return {
     end
 },
 
-'folke/lazydev.nvim',
+{
+    'folke/lazydev.nvim',
+    ft = 'lua',
+},
 
 {
     'williamboman/mason.nvim',

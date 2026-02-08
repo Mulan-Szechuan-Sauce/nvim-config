@@ -65,11 +65,6 @@ function functions.smart_shorten_path(path, width)
     return shortened
 end
 
----@deprecated Export moved. Use `require('shared.extensions').snacks_find_file()` instead
-function functions.snacks_find_file()
-    require('shared.extensions').snacks_find_file()
-end
-
 function functions.fzf_path_aliases(path_aliases, root)
     local fzf = require('fzf-lua')
 
@@ -230,6 +225,11 @@ function functions.run_cmd_in_floating_window(cmd, cwd)
     end
 
     return output
+end
+
+---@deprecated Export moved. Use `require('shared.extensions').snacks_find_file()` instead
+function functions.snacks_find_file()
+    require('shared.extensions').snacks_find_file()
 end
 
 return functions
