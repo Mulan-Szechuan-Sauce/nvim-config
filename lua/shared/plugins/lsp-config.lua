@@ -3,6 +3,8 @@ local lspconfig = require('lspconfig')
 -- Make sure neodev runs before any lspconfig
 require('lazydev').setup({
     library = {
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
         vim.fn.stdpath('config'),
     },
     enabled = function(root_dir)
