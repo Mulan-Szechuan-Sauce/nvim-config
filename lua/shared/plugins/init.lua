@@ -4,6 +4,33 @@ return {
 
 'nvim-lua/plenary.nvim',
 'nvim-tree/nvim-web-devicons',
+'lambdalisue/suda.vim',
+'sbdchd/neoformat',
+
+{
+    'nvim-mini/mini.nvim',
+    version = '*',
+    config = function()
+        -- Text Editing
+        require('mini.ai').setup()
+        require('mini.align').setup()
+        require('mini.comment').setup()
+        require('mini.move').setup({
+            mappings = {
+                down       = '<down>',
+                up         = '<up>',
+                line_down  = '<down>',
+                line_up    = '<up>',
+                left       = '',
+                right      = '',
+                line_left  = '',
+                line_right = '',
+            }
+        })
+        require('mini.operators').setup()
+        require('mini.surround').setup()
+    end
+},
 
 {
     'folke/which-key.nvim',
@@ -21,13 +48,6 @@ return {
         },
     },
 },
-
-'tpope/vim-surround',
-'tpope/vim-repeat',
-'nelstrom/vim-visual-star-search',
-'tommcdo/vim-lion',
-'lambdalisue/suda.vim',
-'sbdchd/neoformat',
 
 {
     'https://codeberg.org/andyg/leap.nvim',
@@ -76,16 +96,6 @@ return {
             git = { enabled = true },
             gitbrowse = { enabled = true },
         })
-
-
-        local original_truncpath = Snacks.picker.util.truncpath
-        function dynamic_width_truncpath(path, _len, opts)
-            local size = vim.api.nvim_list_uis()[1]
-            -- Snacks takes up 80% of the screen and is split into 2x 50% columns
-            local snacks_file_width = vim.fn.floor(0.8 * 0.5 * size.width) - 3;
-            return original_truncpath(path, snacks_file_width, opts)
-        end
-        Snacks.picker.util.truncpath = dynamic_width_truncpath
 
         -- vim.cmd [[highlight SnacksPickerDir guifg='#BCBCBC']]
         -- vim.cmd [[highlight SnacksDashboardDir guifg='#BCBCBC']]
@@ -150,13 +160,6 @@ return {
     version = '*',
     config = function()
         require('toggleterm').setup()
-    end
-},
-
-{
-    'numToStr/Comment.nvim',
-    config = function()
-        require('Comment').setup()
     end
 },
 

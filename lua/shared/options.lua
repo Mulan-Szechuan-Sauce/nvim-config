@@ -24,3 +24,4 @@ vim.opt.listchars = {
     trail = '·',
     tab = ">-",
 }
+vim.o.showmode = false

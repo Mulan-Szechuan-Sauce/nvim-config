@@ -1,3 +1,5 @@
+---@module 'blink.cmp'
+---@type blink.cmp.Config
 return {
     keymap = {
         preset = 'enter',
@@ -37,6 +39,30 @@ return {
         },
         documentation = {
             auto_show = true,
+        },
+    },
+
+    cmdline = {
+        keymap = {
+            preset = 'inherit',
+            -- Since we suppress auto show on the first word if we want manual completion
+            -- we can trigger as per usual
+            ['<C-n>'] = { 'select_next', 'show', 'fallback' },
+            ['<C-p>'] = { 'select_prev', 'show', 'fallback' },
+            ['<TAB>'] = { 'select_next', 'show', 'fallback' },
+            ['<S-TAB>'] = { 'select_prev', 'show', 'fallback' },
+            ['<C-c>'] = { 'cancel', 'fallback' },
+        },
+        completion = {
+            menu = {
+                -- Don't auto show on the first word since pressing enter will trigger
+                -- completion rather than submit. After the first word though we can
+                -- trigger completions more naturally.
+                auto_show = function(ctx)
+                    local split = vim.split(ctx.line, ' ')
+                    return #split > 1
+                end,
+            },
         },
     },
 }
