@@ -136,6 +136,7 @@ return {
     dependencies = {
         'neovim/nvim-lspconfig',
         'williamboman/mason-lspconfig.nvim',
+        'b0o/schemastore.nvim',
     },
     config = function()
         require('shared.plugins.lsp-config')
