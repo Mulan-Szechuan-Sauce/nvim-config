@@ -6,6 +6,8 @@ return {
 'nvim-tree/nvim-web-devicons',
 'lambdalisue/suda.vim',
 'sbdchd/neoformat',
+'tpope/vim-surround',
+'tpope/vim-repeat',
 
 {
     'nvim-mini/mini.nvim',
@@ -27,8 +29,15 @@ return {
                 line_right = '',
             }
         })
-        require('mini.operators').setup()
-        require('mini.surround').setup()
+        require('mini.operators').setup({
+            exchange = {
+                prefix = 'gX',
+            },
+            replace = {
+                prefix = 'gl',
+            },
+        })
+        require('mini.splitjoin').setup()
     end
 },
 
@@ -73,10 +82,9 @@ return {
 },
 
 {
-    "folke/todo-comments.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    opts = {
-    }
+    'folke/todo-comments.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = {}
 },
 
 {
@@ -163,7 +171,6 @@ return {
     end
 },
 
-'gpanders/editorconfig.nvim',
 'github/copilot.vim',
 'sindrets/diffview.nvim',
 
