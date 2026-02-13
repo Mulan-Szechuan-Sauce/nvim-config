@@ -121,11 +121,9 @@ return {
 {
     'folke/trouble.nvim',
     dependencies = 'nvim-tree/nvim-web-devicons',
-    config = function()
-        require('trouble').setup({
-            focus = true
-        });
-    end
+    opts = {
+        focus = true
+    },
 },
 
 {
@@ -148,9 +146,7 @@ return {
 {
     'j-hui/fidget.nvim',
     dependencies = { 'neovim/nvim-lspconfig' },
-    config = function()
-        require('fidget').setup({})
-    end
+    opts = {},
 },
 
 {
@@ -166,9 +162,7 @@ return {
 {
     'akinsho/toggleterm.nvim',
     version = '*',
-    config = function()
-        require('toggleterm').setup()
-    end
+    opts = {},
 },
 
 'github/copilot.vim',
@@ -201,11 +195,14 @@ return {
 
 {
     'WolfeCub/harpeek.nvim',
-    config = function()
-        require('harpeek').setup({
-            tabline = true,
-        })
-    end
+    opts = {
+        tabline = true,
+    }
+},
+
+{
+    'brenoprata10/nvim-highlight-colors',
+    opts = {}
 },
 
 }
