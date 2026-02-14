@@ -15,7 +15,12 @@ local lazy = require('lazy')
 local plugins = require('shared.plugins')
 local user_plugins = vim.g.user_config.install_plugins()
 
--- Using list_extend instead of tbl_extend to ensure all plugins are included. tbl_extend merges the two and because
--- lists in Lua are tables with keys 1 -> N we end up losing values in the lists from key conflicts.
-vim.list_extend(plugins, user_plugins)
-lazy.setup(plugins)
+lazy.setup({
+    spec = {
+        plugins,
+        user_plugins,
+    },
+    -- No point having the lockfile in the shared repo
+    -- Let's put it next to the user's config
+    lockfile = vim.g.user_config_path .. '/lazy-lock.json'
+})

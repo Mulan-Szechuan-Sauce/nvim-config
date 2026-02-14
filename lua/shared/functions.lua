@@ -14,6 +14,7 @@ function functions.require_user_config()
             package.path = (expanded .. "?.lua;") .. (expanded .. "?/init.lua") .. ";" .. package.path
             require('init')
 
+            --- Path to the user.nvim folder that has been loaded
             vim.g.user_config_path = expanded
             break
         end
