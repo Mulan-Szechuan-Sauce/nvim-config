@@ -6,39 +6,11 @@ return {
 'nvim-tree/nvim-web-devicons',
 'lambdalisue/suda.vim',
 'sbdchd/neoformat',
-'tpope/vim-surround',
-'tpope/vim-repeat',
 
 {
     'nvim-mini/mini.nvim',
     version = '*',
-    config = function()
-        -- Text Editing
-        require('mini.ai').setup()
-        require('mini.align').setup()
-        require('mini.comment').setup()
-        require('mini.move').setup({
-            mappings = {
-                down       = '<down>',
-                up         = '<up>',
-                line_down  = '<down>',
-                line_up    = '<up>',
-                left       = '',
-                right      = '',
-                line_left  = '',
-                line_right = '',
-            }
-        })
-        require('mini.operators').setup({
-            exchange = {
-                prefix = 'gX',
-            },
-            replace = {
-                prefix = 'gl',
-            },
-        })
-        require('mini.splitjoin').setup()
-    end
+    config = function() require('shared.plugins.mini') end,
 },
 
 {
@@ -127,15 +99,11 @@ return {
 },
 
 {
-    'folke/lazydev.nvim',
-    ft = 'lua',
-},
-
-{
     'williamboman/mason.nvim',
     dependencies = {
         'neovim/nvim-lspconfig',
         'williamboman/mason-lspconfig.nvim',
+        { 'folke/lazydev.nvim', ft = 'lua' },
         'b0o/schemastore.nvim',
     },
     config = function()
