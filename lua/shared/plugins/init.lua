@@ -16,6 +16,7 @@ return {
 {
     'folke/which-key.nvim',
     event = 'VeryLazy',
+    ---@type wk.Opts
     opts = {
         triggers = {},
     },

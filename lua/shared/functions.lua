@@ -66,6 +66,30 @@ function functions.smart_shorten_path(path, width)
     return shortened
 end
 
+---Copies the diagnostic under the cursor to the clipboard.
+function functions.copy_diagnostic()
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local diagnostics = vim.diagnostic.get(0, { lnum = line - 1 })
+
+    ---@type vim.Diagnostic[]
+    local matches = {}
+    -- Find diagnostics that overlap with the column of our cursor
+    for _, d in pairs(diagnostics) do
+        if col >= d.col and col < d.end_col then
+            table.insert(matches, d)
+        end
+    end
+
+    if #matches == 0 then return end
+
+    -- Sort to find the most relevant diagnostic if there are multiple
+    table.sort(matches, function(a, b) return a.severity < b.severity end)
+
+    local message = diagnostics[1].message
+    -- Copy to system clipboard
+    vim.fn.setreg('+', message)
+end
+
 function functions.fzf_path_aliases(path_aliases, root)
     local fzf = require('fzf-lua')
 
