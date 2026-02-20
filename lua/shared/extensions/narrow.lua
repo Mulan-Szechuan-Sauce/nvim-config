@@ -6,7 +6,8 @@ local function restore_winopts(opts)
     end
 end
 
-local function open_current_tsnode_in_scratch_buf()
+---@return TSNode?
+local function get_current_function_node()
     local node = vim.treesitter.get_node()
 
     while node do
@@ -21,9 +22,69 @@ local function open_current_tsnode_in_scratch_buf()
         end
     end
 
+    return node
+end
+
+---@param fn_node TSNode
+local function get_leading_comment_start_row(fn_node)
+    local node = fn_node:prev_named_sibling()
+
+    -- walk up over contiguous comment siblings
+    local top_row = nil
+    while node and node:type() == 'comment' do
+        top_row = node:start()
+        node = node:prev_named_sibling()
+    end
+
+    return top_row
+end
+
+
+local function fold_lines(buf, start_row, end_row)
+    -- Fold Top (Lines 1 to start_row)
+    if start_row > 0 then
+        -- Vim rows are 1-based, start_row is 0-based
+        vim.cmd(string.format("1,%dfold", start_row))
+    end
+    -- Fold Bottom (Lines end_row+2 to EOF)
+    local total_lines = vim.api.nvim_buf_line_count(buf)
+    if end_row + 2 <= total_lines then
+        vim.cmd(string.format("%d,$fold", end_row + 2))
+    end
+end
+
+local function setup_narrow_win()
+    local original_win_opts = {
+        foldtext = vim.opt_local.foldtext,
+        foldopen = vim.opt_local.foldopen,
+        fillchars = vim.opt_local.fillchars,
+        winhighlight = vim.opt_local.winhighlight,
+    }
+
+    -- Make fold text empty string
+    vim.opt_local.foldtext = '""'
+    -- Don't open folds
+    vim.opt_local.foldopen = ''
+    -- Make the fold column invisible/blend in
+    vim.opt_local.fillchars:append('fold: ')
+    -- Make the fold background invisible
+    vim.opt_local.winhighlight:append("Folded:Normal")
+
+    return original_win_opts
+end
+
+local function copy_lsp_clients(src_buf, target_buf)
+    for _, client in ipairs(vim.lsp.get_clients({ bufnr = src_buf })) do
+        vim.lsp.buf_attach_client(target_buf, client.id)
+    end
+end
+
+local function open_current_tsnode_in_scratch_buf()
+    local node = get_current_function_node()
     if not node then return end
 
-    local start_row, start_col, end_row, end_col = vim.treesitter.get_node_range(node)
+    local start_row = get_leading_comment_start_row(node) or node:start()
+    local end_row = node:end_()
 
     local original_buf = vim.api.nvim_get_current_buf()
     local original_lines = vim.api.nvim_buf_get_lines(original_buf, 0, -1, false)
@@ -41,38 +102,9 @@ local function open_current_tsnode_in_scratch_buf()
     local original_name = vim.api.nvim_buf_get_name(original_buf)
     vim.api.nvim_buf_set_name(tmp_buf, original_name .. '.NARROW')
 
-    -- Fold Top (Lines 1 to start_row)
-    if start_row > 0 then
-        -- Vim rows are 1-based, start_row is 0-based
-        vim.cmd(string.format("1,%dfold", start_row))
-    end
-    -- Fold Bottom (Lines end_row+2 to EOF)
-    local total_lines = vim.api.nvim_buf_line_count(tmp_buf)
-    if end_row + 2 <= total_lines then
-        vim.cmd(string.format("%d,$fold", end_row + 2))
-    end
-
-    local original_win_opts = {
-        foldtext = vim.opt_local.foldtext,
-        foldopen = vim.opt_local.foldopen,
-        fillchars = vim.opt_local.fillchars,
-        winhighlight = vim.opt_local.winhighlight,
-    }
-
-    -- Make fold text empty string
-    vim.opt_local.foldtext = '""'
-    -- Don't open folds
-    vim.opt_local.foldopen = ''
-    -- Make the fold column invisible/blend in
-    vim.opt_local.fillchars:append('fold: ')
-    -- Make the fold background invisible
-    vim.opt_local.winhighlight:append("Folded:Normal")
-
-    -- Copy over all our lsp clients
-    local clients = vim.lsp.get_clients({ bufnr = original_buf })
-    for _, client in ipairs(clients) do
-        vim.lsp.buf_attach_client(tmp_buf, client.id)
-    end
+    local original_win_opts = setup_narrow_win()
+    fold_lines(tmp_buf, start_row, end_row)
+    copy_lsp_clients(original_buf, tmp_buf)
 
     vim.api.nvim_create_autocmd({ 'BufDelete' }, {
         pattern = { '<buffer>' },
