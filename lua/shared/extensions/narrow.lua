@@ -94,7 +94,7 @@ local function open_current_tsnode_in_scratch_buf()
     local tmp_buf = vim.api.nvim_create_buf(true, true)
     vim.api.nvim_buf_set_lines(tmp_buf, 0, -1, false, original_lines)
     vim.api.nvim_set_option_value('filetype', ft, { buf = tmp_buf })
-    vim.api.nvim_set_option_value('bufhidden', 'delete', { buf = tmp_buf })
+    vim.api.nvim_set_option_value('bufhidden', 'wipe', { buf = tmp_buf })
     vim.api.nvim_set_option_value('buftype', 'nofile', { buf = tmp_buf })
     vim.api.nvim_set_current_buf(tmp_buf)
     vim.api.nvim_win_set_cursor(0, { cursor_row, cursor_col })
@@ -109,7 +109,8 @@ local function open_current_tsnode_in_scratch_buf()
     vim.api.nvim_create_autocmd({ 'BufDelete' }, {
         pattern = { '<buffer>' },
         callback = function()
-            -- TODO: Figure out how to set the cursor and viewport to be aligned
+            local cur_cursor = vim.api.nvim_win_get_cursor(0)
+            local visual_line = vim.fn.winline()
 
             -- Calculate new function size (incase we added/removed lines)
             local bottom_lines_count = #original_lines - (end_row + 1)
@@ -118,6 +119,15 @@ local function open_current_tsnode_in_scratch_buf()
 
             -- Copy over only the lines of our narrowed function
             vim.api.nvim_buf_set_lines(original_buf, start_row, end_row + 1, false, narrowed_content)
+
+            -- Focusing our original buffer with bufhidden still set would try and delete it causing an error
+            vim.api.nvim_set_option_value('bufhidden', '', { buf = tmp_buf })
+            vim.api.nvim_set_current_buf(original_buf)
+
+            -- Adjust the view to match what it was in the temp buffer
+            vim.api.nvim_win_set_cursor(0, cur_cursor)
+            local topline = cur_cursor[1] - visual_line + 1
+            vim.fn.winrestview({ topline = topline })
 
             restore_winopts(original_win_opts)
         end,
