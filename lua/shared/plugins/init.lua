@@ -4,8 +4,6 @@ return {
 
 'nvim-lua/plenary.nvim',
 'nvim-tree/nvim-web-devicons',
-'lambdalisue/suda.vim',
-'sbdchd/neoformat',
 
 {
     'nvim-mini/mini.nvim',
@@ -66,7 +64,7 @@ return {
 },
 
 {
-    "folke/snacks.nvim",
+    'folke/snacks.nvim',
     priority = 1000,
     lazy = false,
     config = function()
@@ -87,13 +85,15 @@ return {
     'saghen/blink.cmp',
     dependencies = 'rafamadriz/friendly-snippets',
     version = '*',
+    event = { 'InsertEnter', 'CmdlineEnter' },
     opts = require('shared.plugins.blink'),
-    opts_extend = { "sources.default" }
+    opts_extend = { 'sources.default' }
 },
 
 {
     'folke/trouble.nvim',
     dependencies = 'nvim-tree/nvim-web-devicons',
+    cmd = 'Trouble',
     opts = {
         focus = true
     },
@@ -101,12 +101,18 @@ return {
 
 {
     'williamboman/mason.nvim',
+    cmd = 'Mason',
+},
+
+{
+    'williamboman/mason-lspconfig.nvim',
     dependencies = {
+        'williamboman/mason.nvim',
         'neovim/nvim-lspconfig',
-        'williamboman/mason-lspconfig.nvim',
         { 'folke/lazydev.nvim', ft = 'lua' },
         'b0o/schemastore.nvim',
     },
+    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
         require('shared.plugins.lsp-config')
         require('shared.plugins.lsp-ui-config')
@@ -126,12 +132,24 @@ return {
         'rcarriga/nvim-dap-ui',
         'Weissle/persistent-breakpoints.nvim',
     },
+    lazy = true,
     config = function() require('shared.plugins.dap') end,
+},
+
+{
+    'lambdalisue/suda.vim',
+    cmd = 'SudaWrite',
+},
+
+{
+    'sbdchd/neoformat',
+    cmd = 'Neoformat',
 },
 
 {
     'akinsho/toggleterm.nvim',
     version = '*',
+    cmd = 'ToggleTerm',
     opts = {},
 },
 
@@ -149,6 +167,7 @@ return {
         'nvim-lua/plenary.nvim',
         'sindrets/diffview.nvim',
     },
+    cmd = 'Neogit',
     config = true,
 },
 
@@ -177,7 +196,7 @@ return {
 
 {
     'stevearc/quicker.nvim',
-    ft = "qf",
+    ft = 'qf',
     ---@module 'quicker'
     ---@type quicker.SetupOptions
     opts = {},
