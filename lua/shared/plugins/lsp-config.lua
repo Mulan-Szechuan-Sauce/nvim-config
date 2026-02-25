@@ -1,20 +1,4 @@
-local lspconfig = require('lspconfig')
-
--- Make sure neodev runs before any lspconfig
-require('lazydev').setup({
-    library = {
-        -- Load luvit types when the `vim.uv` word is found
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-        vim.fn.stdpath('config'),
-    },
-    enabled = function(root_dir)
-        -- If the repo/project root is dotfiles assume we're in a user.nvim config and enable
-        if root_dir:match('dotfiles$') or root_dir:find('.config/nvim') or root_dir:find('%.nvim') then
-            return true
-        end
-        return false
-    end,
-})
+require('lspconfig')
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -112,24 +96,3 @@ for _, method in ipairs({ 'textDocument/diagnostic', 'workspace/diagnostic' }) d
         return default_diagnostic_handler(err, result, context, config)
     end
 end
-
--- vim.cmd [[autocmd! ColorScheme * highlight NormalFloat guibg=#1f2335]]
--- vim.cmd [[autocmd! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]]
---
--- local border = {
---     { "┏", "FloatBorder" },
---     { "━", "FloatBorder" },
---     { "┓", "FloatBorder" },
---     { "┃", "FloatBorder" },
---     { "┛", "FloatBorder" },
---     { "━", "FloatBorder" },
---     { "┗", "FloatBorder" },
---     { "┃", "FloatBorder" },
--- }
---
--- local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
--- function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
---     opts = opts or {}
---     opts.border = opts.border or border
---     return orig_util_open_floating_preview(contents, syntax, opts, ...)
--- end

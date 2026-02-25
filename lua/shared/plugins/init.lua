@@ -99,6 +99,7 @@ return {
     },
 },
 
+
 {
     'williamboman/mason.nvim',
     cmd = 'Mason',
@@ -109,7 +110,6 @@ return {
     dependencies = {
         'williamboman/mason.nvim',
         'neovim/nvim-lspconfig',
-        { 'folke/lazydev.nvim', ft = 'lua' },
         'b0o/schemastore.nvim',
     },
     event = { 'BufReadPre', 'BufNewFile' },
@@ -117,6 +117,25 @@ return {
         require('shared.plugins.lsp-config')
         require('shared.plugins.lsp-ui-config')
     end
+},
+
+{
+    'folke/lazydev.nvim',
+    ft = 'lua',
+    opts = {
+        library = {
+            -- Load luvit types when the `vim.uv` word is found
+            { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+            vim.fn.stdpath('config'),
+        },
+        enabled = function(root_dir)
+            -- If the repo/project root is dotfiles assume we're in a user.nvim config and enable
+            if root_dir:match('dotfiles$') or root_dir:find('.config/nvim') or root_dir:find('%.nvim') then
+                return true
+            end
+            return false
+        end,
+    },
 },
 
 {
