@@ -44,4 +44,3 @@ vim.keymap.del('x', 'ys')
 vim.keymap.set('x', 'S', [[:<C-u>lua MiniSurround.add('visual')<CR>]], { silent = true })
 -- Make special mapping for "add surrounding for line"
 vim.keymap.set('n', 'yss', 'ys_', { remap = true })
-

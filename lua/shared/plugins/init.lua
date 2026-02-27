@@ -30,10 +30,27 @@ return {
 },
 
 {
-    'https://codeberg.org/andyg/leap.nvim',
-    config = function()
-        vim.keymap.set({'n', 'x', 'o'}, 's', '<Plug>(leap)')
-        vim.keymap.set('n',             'S', '<Plug>(leap-from-window)')
+    'folke/flash.nvim',
+    event = 'VeryLazy',
+    keys = {
+        { 's', mode = { 'n', 'x' }, function() require('flash').jump() end, desc = 'Flash' },
+        { 'S', mode = { 'n', 'x', 'o' }, function() require('flash').treesitter() end, desc = 'Flash Treesitter' },
+        { '<c-s>', mode = { 'c' }, function() require('flash').toggle() end, desc = 'Toggle Flash Search' },
+    },
+    ---@module 'flash'
+    ---@type Flash.Config
+    opts = {
+        modes = {
+            char = {
+                enabled = false,
+            },
+        },
+    },
+    config = function(_, opts)
+        require('flash').setup(opts)
+
+        local hl = vim.api.nvim_get_hl(0, { name = 'Substitute', link = false })
+        vim.api.nvim_set_hl(0, 'FlashLabel', { fg = hl.fg, bg = hl.bg, bold = true, standout = true })
     end
 },
 
@@ -140,7 +157,6 @@ return {
 
 {
     'j-hui/fidget.nvim',
-    dependencies = { 'neovim/nvim-lspconfig' },
     opts = {},
 },
 
