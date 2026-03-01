@@ -2,11 +2,15 @@ local functions = {};
 
 function functions.require_user_config()
     local config_paths = {
-        os.getenv("MSS_NEOVIM_USER_DIR") or "GARBAGE",
         "~/local/src/user.nvim/",
         "~/.config/user.nvim/",
         "~/.user.nvim/",
     }
+
+    local env_dir = os.getenv("MSS_NEOVIM_USER_DIR")
+    if env_dir then
+        table.insert(config_paths, 1, env_dir)
+    end
 
     for _, path in ipairs(config_paths) do
         local expanded = vim.fn.expand(path)

@@ -5,6 +5,16 @@ return {
         preset = 'enter',
         ['<TAB>'] = { 'select_next', 'fallback' },
         ['<S-TAB>'] = { 'select_prev', 'fallback' },
+        ['<C-y>'] = {
+            function()
+                local keys = vim.fn['copilot#Accept']('')
+                if keys ~= '' then
+                    vim.api.nvim_feedkeys(keys, 'i', true)
+                    return true
+                end
+            end,
+            'fallback'
+        },
     },
 
     appearance = {
