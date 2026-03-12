@@ -105,10 +105,17 @@ function M.snacks_find_file()
                     local path = cwd .. '/' .. (selected and selected.file or input)
 
                     -- Strip trailing slash. This controls if the full path is displayed.
-                    path = path:gsub("/$", "")
+                    local stripped = path:gsub("/$", "")
+                    local is_dir = vim.fn.isdirectory(path) == 1
 
-                    if vim.fn.isdirectory(path) == 1 then
-                        goto_dir(path, picker)
+                    -- Create the dir if it doesn't exist and there's a trailing slash
+                    if path:sub(-1) == '/' and not is_dir then
+                        vim.fn.mkdir(path)
+                        is_dir = true
+                    end
+
+                    if is_dir then
+                        goto_dir(stripped, picker)
                     else
                         edit_file(path, picker)
                     end
@@ -141,6 +148,12 @@ function M.snacks_find_file()
                     goto_parent_dir(picker)
                 end,
             },
+            open_oil = {
+                action = function(picker)
+                    picker:close()
+                    require('oil').open(cwd)
+                end,
+            },
         },
         win = {
             input = {
@@ -148,6 +161,7 @@ function M.snacks_find_file()
                     ['<c-w>'] = { 'parent', mode = { 'i', 'n' } },
                     ['<m-c>'] = { 'cd', mode = { 'i', 'n' } },
                     ['<bs>'] = { 'backspace', mode = { 'i' } },
+                    ['<c-o>'] = { 'open_oil', mode = { 'i', 'n' } },
                 },
             },
         },
