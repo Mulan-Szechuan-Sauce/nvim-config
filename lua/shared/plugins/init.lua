@@ -65,6 +65,15 @@ return {
 },
 
 {
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    branch = 'main',
+    init = function()
+        vim.g.no_plugin_maps = true
+    end,
+},
+
+{
     'nvim-treesitter/nvim-treesitter-context',
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
 },

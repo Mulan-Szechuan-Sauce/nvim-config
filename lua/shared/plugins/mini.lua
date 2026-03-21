@@ -1,5 +1,12 @@
 -- Text Editing
-require('mini.ai').setup()
+require('mini.ai').setup({
+    custom_textobjects = {
+        F = require('mini.ai').gen_spec.treesitter({
+            a = { '@function.outer', '@method.outer' },
+            i = { '@function.inner', '@method.inner' },
+        }),
+    },
+})
 require('mini.align').setup()
 require('mini.comment').setup()
 

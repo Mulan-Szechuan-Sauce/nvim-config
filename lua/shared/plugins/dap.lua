@@ -70,9 +70,7 @@ dap.configurations.rust = {
         args = function()
             local input = vim.fn.input('Args: ')
             if input == "" then return {} end
-            local t = { "--" }
-            vim.list_extend(t, vim.split(input, "%s+"))
-            return t
+            return vim.split(input, "%s+")
         end,
     },
     {
