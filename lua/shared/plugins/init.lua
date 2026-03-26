@@ -8,7 +8,7 @@ return {
 {
     'nvim-mini/mini.nvim',
     version = '*',
-    config = function() require('shared.plugins.mini') end,
+    config = function() require('shared.configs.mini') end,
 },
 
 {
@@ -60,7 +60,7 @@ return {
     build = ':TSUpdate',
     config = function()
         require('nvim-treesitter').setup();
-        require('shared.plugins.treesitter');
+        require('shared.configs.treesitter');
     end
 },
 
@@ -86,7 +86,7 @@ return {
 
 {
     'nvim-lualine/lualine.nvim',
-    config = function() require('shared.plugins.lualine') end
+    config = function() require('shared.configs.lualine') end
 },
 
 {
@@ -112,7 +112,7 @@ return {
     dependencies = 'rafamadriz/friendly-snippets',
     version = '*',
     event = { 'InsertEnter', 'CmdlineEnter' },
-    opts = require('shared.plugins.blink'),
+    opts = require('shared.configs.blink'),
     opts_extend = { 'sources.default' }
 },
 
@@ -140,8 +140,8 @@ return {
     },
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
-        require('shared.plugins.lsp-config')
-        require('shared.plugins.lsp-ui-config')
+        require('shared.configs.lsp-config')
+        require('shared.configs.lsp-ui-config')
     end
 },
 
@@ -177,7 +177,7 @@ return {
         'Weissle/persistent-breakpoints.nvim',
     },
     lazy = true,
-    config = function() require('shared.plugins.dap') end,
+    config = function() require('shared.configs.dap') end,
 },
 
 {
@@ -228,6 +228,7 @@ return {
 
 {
     'WolfeCub/harpeek.nvim',
+    dir = '~/Projects/harpeek.nvim',
     opts = {
         tabline = true,
     }

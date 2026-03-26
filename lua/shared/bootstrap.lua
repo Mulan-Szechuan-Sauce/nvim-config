@@ -12,12 +12,11 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local lazy = require('lazy')
-local plugins = require('shared.plugins')
 local user_plugins = vim.g.user_config.install_plugins()
 
 lazy.setup({
     spec = {
-        plugins,
+        { import = 'shared.plugins' },
         user_plugins,
     },
     -- No point having the lockfile in the shared repo
