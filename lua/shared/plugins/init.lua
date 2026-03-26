@@ -85,11 +85,6 @@ return {
 },
 
 {
-    'nvim-lualine/lualine.nvim',
-    config = function() require('shared.configs.lualine') end
-},
-
-{
     'folke/snacks.nvim',
     priority = 1000,
     lazy = false,
@@ -105,15 +100,6 @@ return {
         -- vim.cmd [[highlight SnacksPickerDir guifg='#BCBCBC']]
         -- vim.cmd [[highlight SnacksDashboardDir guifg='#BCBCBC']]
     end,
-},
-
-{
-    'saghen/blink.cmp',
-    dependencies = 'rafamadriz/friendly-snippets',
-    version = '*',
-    event = { 'InsertEnter', 'CmdlineEnter' },
-    opts = require('shared.configs.blink'),
-    opts_extend = { 'sources.default' }
 },
 
 {

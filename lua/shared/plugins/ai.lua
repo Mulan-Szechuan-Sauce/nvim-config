@@ -1,38 +1,36 @@
 return {
-    {
-        'olimorris/codecompanion.nvim',
-        version = '^18.0.0',
-        dependencies = {
-            'nvim-lua/plenary.nvim',
-            'nvim-treesitter/nvim-treesitter',
-            'lalitmee/codecompanion-spinners.nvim',
-            'j-hui/fidget.nvim',
+    'olimorris/codecompanion.nvim',
+    version = '^18.0.0',
+    dependencies = {
+        'nvim-lua/plenary.nvim',
+        'nvim-treesitter/nvim-treesitter',
+        'lalitmee/codecompanion-spinners.nvim',
+        'j-hui/fidget.nvim',
+    },
+    cmd = { 'CodeCompanion', 'CodeCompanionChat', 'CodeCompanionActions', 'CodeCompanionCmd' },
+    opts = {
+        display = {
+            action_palette = {
+                provider = 'default',
+            },
         },
-        cmd = { 'CodeCompanion', 'CodeCompanionChat', 'CodeCompanionActions', 'CodeCompanionCmd' },
-        opts = {
-            display = {
-                action_palette = {
-                    provider = 'default',
-                },
-            },
-            adapters = {
-                http = {
-                    copilot = function()
-                        return require('codecompanion.adapters').extend('copilot', {
-                            schema = {
-                                model = {
-                                    default = 'claude-sonnet-4.6',
-                                },
+        adapters = {
+            http = {
+                copilot = function()
+                    return require('codecompanion.adapters').extend('copilot', {
+                        schema = {
+                            model = {
+                                default = 'claude-sonnet-4.6',
                             },
-                        })
-                    end,
-                },
+                        },
+                    })
+                end,
             },
-            extensions = {
-                spinner = {
-                    opts = {
-                        style = 'fidget',
-                    },
+        },
+        extensions = {
+            spinner = {
+                opts = {
+                    style = 'fidget',
                 },
             },
         },
