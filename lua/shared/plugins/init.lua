@@ -85,24 +85,6 @@ return {
 },
 
 {
-    'folke/snacks.nvim',
-    priority = 1000,
-    lazy = false,
-    config = function()
-        require('snacks').setup({
-            picker = { enabled = true, },
-            input = { enabled = true },
-            bufdelete = { enabled = true },
-            git = { enabled = true },
-            gitbrowse = { enabled = true },
-        })
-
-        -- vim.cmd [[highlight SnacksPickerDir guifg='#BCBCBC']]
-        -- vim.cmd [[highlight SnacksDashboardDir guifg='#BCBCBC']]
-    end,
-},
-
-{
     'folke/trouble.nvim',
     dependencies = 'nvim-tree/nvim-web-devicons',
     cmd = 'Trouble',

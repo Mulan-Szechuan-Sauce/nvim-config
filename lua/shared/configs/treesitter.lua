@@ -1,6 +1,8 @@
 local ts = require('nvim-treesitter')
 local parsers = require("nvim-treesitter.parsers")
 
+local declined_langs = {}
+
 ---@param event vim.api.keyset.create_autocmd.callback_args
 local install_parser_and_enable_features = function(event)
     local buf = event.buf
@@ -11,8 +13,8 @@ local install_parser_and_enable_features = function(event)
         return
     end
 
-    -- Don’t ask again for this buffer
-    if vim.b[buf].ts_install_declined then
+    -- Don’t ask again for this filetype this session
+    if declined_langs[lang] then
         return
     end
 
@@ -24,7 +26,7 @@ local install_parser_and_enable_features = function(event)
 
     local on_select = function(choice)
         if choice ~= "yes" then
-            vim.b[buf].ts_install_declined = true
+            declined_langs[lang] = true
             return
         end
 
