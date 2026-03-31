@@ -143,6 +143,23 @@ function functions.run_cmd_in_floating_window(cmd, cwd)
     return output
 end
 
+--- Shows inline type hints for variables and intermediates. Shows arg names for funcalls.
+function functions.toggle_inline_hints()
+    local clients = vim.lsp.get_clients({ bufnr = 0 })
+    for _, client in pairs(clients) do
+        if client:supports_method('textDocument/inlayHint', 0) then
+            local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
+            vim.lsp.inlay_hint.enable(not enabled, { bufnr = 0 })
+            return
+        end
+    end
+
+    vim.notify(
+        "No attached LSP client supports inlay hints for this buffer",
+        vim.log.levels.WARN
+    )
+end
+
 ---@deprecated Export moved. Use `require('shared.extensions').snacks_find_file()` instead
 function functions.snacks_find_file()
     require('shared.extensions').snacks_find_file()
