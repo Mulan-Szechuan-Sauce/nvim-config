@@ -214,7 +214,6 @@ return {
 
 {
     'WolfeCub/harpeek.nvim',
-    dir = '~/Projects/harpeek.nvim',
     opts = {
         tabline = true,
     }
