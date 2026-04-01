@@ -40,11 +40,15 @@ end
 function M.codecompanion_fix_diagnostic(diagnostic)
     if not diagnostic then return end
 
-    vim.api.nvim_buf_set_mark(0, '<', diagnostic.lnum + 1, diagnostic.col, {})
-    vim.api.nvim_buf_set_mark(0, '>', diagnostic.end_lnum + 1, diagnostic.end_col, {})
+    local lnum = diagnostic.lnum + 1
+    local end_lnum = diagnostic.end_lnum + 1
+
+    vim.api.nvim_buf_set_mark(0, '<', lnum, diagnostic.col, {})
+    vim.api.nvim_buf_set_mark(0, '>', end_lnum, diagnostic.end_col, {})
 
     require('codecompanion').inline({
         args = 'Fix the following diagnostic: ' .. diagnostic.message,
+        range = end_lnum - lnum + 1
     })
 end
 

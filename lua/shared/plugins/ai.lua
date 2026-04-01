@@ -9,6 +9,9 @@ return {
     },
     cmd = { 'CodeCompanion', 'CodeCompanionChat', 'CodeCompanionActions', 'CodeCompanionCmd' },
     opts = {
+        opts = {
+            log_level = 'DEBUG',
+        },
         display = {
             action_palette = {
                 provider = 'default',
