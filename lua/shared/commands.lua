@@ -15,3 +15,10 @@ vim.api.nvim_create_user_command(
     end,
     { desc = 'Trim trailing whitespace'}
 )
+
+vim.api.nvim_create_user_command('EditRegister', function(opts)
+    require('shared.extensions').edit_register(opts.args)
+end, {
+    desc = 'Open a floating window to edit a register',
+    nargs = 1,
+})
