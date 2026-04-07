@@ -28,7 +28,11 @@ function M.edit_register(reg_name)
     end
 
     local reg_type = vim.fn.getregtype(reg_name)
-    local content = vim.fn.getreg(reg_name, 1, true)
+
+    local reg_content = vim.fn.getreg(reg_name, 1, true)
+    local content = vim.tbl_map(function(line)
+        return vim.fn.keytrans(line)
+    end, reg_content)
 
     local tmp_buf = vim.api.nvim_create_buf(false, true)
 
@@ -36,11 +40,19 @@ function M.edit_register(reg_name)
     vim.api.nvim_buf_set_name(tmp_buf, string.format("Register_[%s]_%d", reg_name, tmp_buf))
     vim.api.nvim_set_option_value('buftype', 'acwrite', { buf = tmp_buf })
     vim.api.nvim_set_option_value('bufhidden', 'wipe', { buf = tmp_buf })
+    vim.api.nvim_set_option_value('syntax', 'on', { buf = tmp_buf })
+
+    vim.api.nvim_buf_call(tmp_buf, function()
+        -- Match anything between < > that looks like a keycode
+        vim.cmd([[syntax match RegisterKey /<[A-Za-z0-9-]\+>/]])
+        -- Link it to a visible highlight group (Special, Keyword, or WarningMsg)
+        vim.cmd([[highlight default link RegisterKey Special]])
+    end)
 
     require('snacks').win({
         buf = tmp_buf,
-        width = 0.6,
-        height = 0.1,
+        width = 0.7,
+        height = 0.3,
         title = ' Edit Register: ' .. reg_name .. ' ',
         title_pos = 'center',
         border = 'solid',
@@ -57,8 +69,10 @@ function M.edit_register(reg_name)
     vim.api.nvim_set_option_value('modified', false, { buf = tmp_buf })
 
     local function save_register()
-        local new_content = vim.api.nvim_buf_get_lines(tmp_buf, 0, -1, false)
-        vim.fn.setreg(reg_name, new_content, reg_type)
+        local lines = vim.api.nvim_buf_get_lines(tmp_buf, 0, -1, false)
+        local processed_content = vim.api.nvim_replace_termcodes(table.concat(lines, "\n"), true, true, true)
+
+        vim.fn.setreg(reg_name, processed_content, reg_type)
 
         -- Tell Neovim the buffer is "saved" so the 'q' part of ':wq' executes without warning
         vim.api.nvim_set_option_value('modified', false, { buf = tmp_buf })
