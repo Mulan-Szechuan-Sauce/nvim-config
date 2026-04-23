@@ -1,9 +1,22 @@
+local ai = require('mini.ai')
 -- Text Editing
-require('mini.ai').setup({
+ai.setup({
     custom_textobjects = {
-        F = require('mini.ai').gen_spec.treesitter({
+        F = ai.gen_spec.treesitter({
             a = { '@function.outer', '@method.outer' },
             i = { '@function.inner', '@method.inner' },
+        }),
+        o = ai.gen_spec.treesitter({
+            a = { '@conditional.outer', '@loop.outer' },
+            i = { '@conditional.inner', '@loop.inner' },
+        }),
+        c = ai.gen_spec.treesitter({
+            a = '@class.outer',
+            i = '@class.inner',
+        }),
+        ['='] = ai.gen_spec.treesitter({
+            a = '@assignment.outer',
+            i = '@assignment.rhs',
         }),
     },
 })
