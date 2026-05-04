@@ -95,17 +95,18 @@ return {
 
 
 {
-    'williamboman/mason.nvim',
-    cmd = 'Mason',
+    'mason-org/mason.nvim',
+    lazy = true,
 },
 
 {
-    'williamboman/mason-lspconfig.nvim',
+    'mason-org/mason-lspconfig.nvim',
     dependencies = {
-        'williamboman/mason.nvim',
+        'mason-org/mason.nvim',
         'neovim/nvim-lspconfig',
         'b0o/schemastore.nvim',
     },
+    cmd = { 'Mason', 'LspInstall' },
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
         require('shared.configs.lsp-config')
