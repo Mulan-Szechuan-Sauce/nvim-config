@@ -80,6 +80,11 @@ return {
                         return #split > 1
                     end,
                 },
+                list = {
+                    selection = {
+                        preselect = false,
+                    },
+                },
             },
         },
     }
