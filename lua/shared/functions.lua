@@ -13,13 +13,15 @@ function functions.require_user_config()
     end
 
     for _, path in ipairs(config_paths) do
-        local expanded = vim.fn.expand(path)
-        if vim.fn.filereadable(expanded .. "init.lua") == 1 then
-            package.path = (expanded .. "?.lua;") .. (expanded .. "?/init.lua") .. ";" .. package.path
+        local dir = vim.fs.normalize(path)
+        if vim.fn.filereadable(vim.fs.joinpath(dir, "init.lua")) == 1 then
+            package.path = vim.fs.joinpath(dir, "?.lua") .. ";"
+                .. vim.fs.joinpath(dir, "?/init.lua") .. ";"
+                .. package.path
             require('init')
 
             --- Path to the user.nvim folder that has been loaded
-            vim.g.user_config_path = expanded
+            vim.g.user_config_path = dir
             break
         end
     end
