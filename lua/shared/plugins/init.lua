@@ -167,7 +167,6 @@ return {
     opts = {},
 },
 
-'github/copilot.vim',
 'sindrets/diffview.nvim',
 
 {
@@ -214,6 +213,17 @@ return {
     ---@module 'quicker'
     ---@type quicker.SetupOptions
     opts = {},
-}
+},
+
+{
+    'github/copilot.vim',
+    cmd = 'Copilot',
+    event = 'InsertEnter',
+    init = function()
+        if vim.fn.isdirectory(vim.fn.expand('~/.config/github-copilot')) == 0 then
+            vim.g.copilot_filetypes = { ['*'] = false }
+        end
+    end,
+},
 
 }
