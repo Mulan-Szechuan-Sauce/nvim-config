@@ -22,6 +22,12 @@ vim.api.nvim_create_user_command(
     { desc = 'Trim trailing whitespace'}
 )
 
+vim.api.nvim_create_user_command('CargoFeatures', function()
+    require('shared.extensions').toggle_cargo_features()
+end, {
+    desc = 'Toggle cargo features for the attached rust-analyzer',
+})
+
 vim.api.nvim_create_user_command('EditRegister', function(opts)
     require('shared.extensions').edit_register(opts.args)
 end, {
