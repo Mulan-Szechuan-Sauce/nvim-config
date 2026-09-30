@@ -3,13 +3,16 @@ vim.api.nvim_create_user_command('Wqa', 'wqa', {})
 
 vim.api.nvim_create_user_command('W', 'SudaWrite', {})
 
-vim.api.nvim_create_user_command('GitLink', function()
+local git_link = function(branch)
     require('snacks').gitbrowse({
+        branch = branch,
         open = function(url)
             vim.fn.setreg('+', url)
         end,
     })
-end, {})
+end
+vim.api.nvim_create_user_command('GitLink', function() git_link() end, {})
+vim.api.nvim_create_user_command('GitLinkDevelop', function() git_link('develop') end, {})
 
 vim.api.nvim_create_user_command(
     'TrimWhitespace',
